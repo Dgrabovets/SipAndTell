@@ -8,6 +8,8 @@ export function VariantsPanel() {
   const [open, setOpen] = useState(false)
   const { variants, set } = useVariants()
 
+  if (VARIANT_GROUPS.length === 0) return null
+
   return (
     <>
       <button className="vp-toggle" aria-expanded={open} onClick={() => setOpen(!open)}>

@@ -48,6 +48,21 @@ export function MonthSheet({ open, onClose, onOpenCup }: Props) {
     setShown({ year: d.getFullYear(), month: d.getMonth(), dir: delta })
   }
 
+  /** Тап по дню выбирает его, а по дню соседнего месяца ещё и переключает на этот месяц. */
+  const pick = (d: Date) => {
+    setPeek(dayKey(d))
+    const delta = (d.getFullYear() - shown.year) * 12 + d.getMonth() - shown.month
+    if (delta !== 0) setShown({ year: d.getFullYear(), month: d.getMonth(), dir: delta > 0 ? 1 : -1 })
+  }
+
+  /** Назад к сегодняшнему дню и его месяцу. */
+  const backToToday = () => {
+    const delta = (now.getFullYear() - shown.year) * 12 + now.getMonth() - shown.month
+    setPeek(today)
+    setShown({ year: now.getFullYear(), month: now.getMonth(), dir: delta >= 0 ? 1 : -1 })
+  }
+  const away = peek !== today || monthKey !== now.getFullYear() * 12 + now.getMonth()
+
   return (
     <GlassSheet open={open} label="Календарь" narrow onClose={onClose}>
       <div className="cal-head">
@@ -87,7 +102,7 @@ export function MonthSheet({ open, onClose, onOpenCup }: Props) {
               const key = dayKey(d)
               const colors = [...new Set(cupsOf(key).map((c) => TEA_COLOR[c.type]))]
               return (
-                <button key={key} className={d.getMonth() === shown.month ? 'cal-day' : 'cal-day out'} style={{ '--today': key === today ? 1 : 0 } as CSSProperties} aria-pressed={peek === key} onClick={() => setPeek(key)}>
+                <button key={key} className={d.getMonth() === shown.month ? 'cal-day' : 'cal-day out'} style={{ '--today': key === today ? 1 : 0 } as CSSProperties} aria-pressed={peek === key} onClick={() => pick(d)}>
                   <b>{d.getDate()}</b>
                   <span className="cal-dots" aria-hidden>
                     {colors.slice(0, 3).map((c) => (
@@ -102,7 +117,16 @@ export function MonthSheet({ open, onClose, onOpenCup }: Props) {
       </div>
 
       <section className="agenda" aria-label={longDay(peekDate)}>
-        <h3>{longDay(peekDate)}</h3>
+        <div className="agenda-head">
+          <h3>{longDay(peekDate)}</h3>
+          <AnimatePresence>
+            {away && (
+              <motion.button className="today-btn" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.85 }} whileTap={{ scale: 0.92 }} onClick={backToToday}>
+                Сегодня
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
         <Smooth>
           {dayCups.length === 0 && <p>В этот день чая не было</p>}
           <ul className="list">

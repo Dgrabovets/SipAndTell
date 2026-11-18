@@ -48,9 +48,7 @@ export function GlassSheet({ open, label, onClose, children, tint, narrow, rippl
             dragElastic={{ top: 0, bottom: 0.6 }}
             onDragEnd={(_, info) => info.offset.y > 120 && onClose()}
           >
-            <div className="sheet-grip-area" onPointerDown={(e) => controls.start(e)}>
-              <div className="sheet-grip" aria-hidden />
-            </div>
+            <div className="sheet-grip-area" onPointerDown={(e) => controls.start(e)} />
             <button className="close-btn" aria-label="Закрыть" onClick={onClose}>
               <Icon name="close" />
             </button>

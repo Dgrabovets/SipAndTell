@@ -166,14 +166,6 @@ button:focus-visible {
   overscroll-behavior: contain;
 }
 
-.sheet-grip {
-  width: 40px;
-  height: 4px;
-  margin: 0 auto;
-  border-radius: 2px;
-  background: var(--glass-shine);
-}
-
 .sheet h2 {
   font-size: 19px;
 }
@@ -1358,26 +1350,11 @@ button:focus-visible {
   position: relative;
 }
 
-.tabs[data-style='segment'] {
-  padding: 4px;
-  border: 1px solid var(--glass-edge);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.06);
-}
-
-.tabs[data-style='segment'] .tab-mark {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--dot, var(--primary)) 30%, rgb(255 255 255 / 0.08));
-  box-shadow: inset 0 1px 0 var(--glass-shine);
-}
-
-.tabs[data-style='underline'] {
+.tabs {
   border-bottom: 1px solid var(--glass-edge);
 }
 
-.tabs[data-style='underline'] .tab-mark {
+.tabs .tab-mark {
   position: absolute;
   right: 18%;
   bottom: -1px;
@@ -1386,57 +1363,6 @@ button:focus-visible {
   border-radius: 2px;
   background: var(--dot, var(--primary));
   box-shadow: 0 0 10px var(--dot, var(--primary));
-}
-
-.tabs[data-style='pager'] {
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.pager-dots {
-  display: flex;
-  gap: 8px;
-}
-
-.pager-dots button {
-  flex: none;
-  width: 22px;
-  min-height: 22px;
-  padding: 0;
-}
-
-.pager-dots button::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  margin: -4px 0 0 -4px;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.25);
-}
-
-.pager-dots i {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  margin: -4px 0 0 -4px;
-  border-radius: 50%;
-  background: var(--dot, var(--primary));
-  box-shadow: 0 0 10px var(--dot, var(--primary));
-}
-
-.tabs[data-style='pager'] b {
-  font-size: 15px;
-}
-
-.tabs[data-style='pager'] small {
-  color: var(--hint);
-  font-size: 12px;
 }
 
 /* Вкладка «О чае» */
@@ -1558,6 +1484,86 @@ button:focus-visible {
   height: 40px;
 }
 
-.tabs[data-style='pager'] .pager-dots button > i {
-  position: absolute;
+
+/* Календарь: чуть шире, ничего не обрезается, больше воздуха */
+.sheet.narrow {
+  width: min(400px, 100%);
+}
+
+.cal-head {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  max-width: 340px;
+  text-align: center;
+}
+
+.cal-weekdays,
+.cal-pane {
+  max-width: 340px;
+}
+
+.cal-weekdays {
+  padding: 0 4px;
+}
+
+/* шесть рядов по 46px и по 4px запаса по краям, чтобы рамки крайних дней не резались */
+.cal-pane {
+  height: 284px;
+  padding: 2px 4px;
+}
+
+.cal-grid {
+  grid-auto-rows: 46px;
+}
+
+.agenda {
+  max-width: 360px;
+  margin-top: 22px;
+  padding-top: 16px;
+}
+
+.agenda-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 30px;
+  margin-bottom: 14px;
+}
+
+.agenda-head h3 {
+  margin: 0;
+}
+
+.today-btn {
+  padding: 4px 14px;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* запас по бокам и сверху, чтобы карточки не резались при сжатии и тени */
+.smooth {
+  margin: 0 -14px -16px;
+}
+
+.smooth-inner {
+  padding: 6px 14px 16px;
+}
+
+/* Шторка без ползунка: тянуть вниз можно за верхнюю кромку, закрыть крестиком */
+.sheet-grip-area {
+  padding: 20px 0 0;
+}
+
+/* Вкладки чуть выше и ближе к заголовку */
+.sheet-head .sheet-sub {
+  margin-bottom: 0;
+}
+
+.tabs {
+  margin: 0 0 4px;
 }

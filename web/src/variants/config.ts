@@ -1,9 +1,14 @@
-/** Варианты элементов, по которым ещё нет решения. Первый вариант в списке берётся по умолчанию. */
-export const VARIANT_GROUPS = [
-  { key: 'tabs', title: 'Детали: вкладки «Моё чаепитие» и «О чае»', options: [{ id: 'segment', label: 'Стеклянная плашка' }, { id: 'underline', label: 'Подчёркивание и свайп' }, { id: 'pager', label: 'Точки и свайп' }] },
-] as const
+export interface VariantGroup {
+  key: string
+  title: string
+  options: readonly { id: string; label: string }[]
+}
 
-export type VariantKey = (typeof VARIANT_GROUPS)[number]['key']
+/** Варианты элементов, по которым ещё нет решения. Первый вариант в группе берётся по умолчанию.
+ *  Сейчас все решено: когда понадобится выбор, сюда добавляется группа, а панель «Вид» появится сама. */
+export const VARIANT_GROUPS: readonly VariantGroup[] = []
+
+export type VariantKey = string
 export type Variants = Record<VariantKey, string>
 
-export const DEFAULT_VARIANTS = Object.fromEntries(VARIANT_GROUPS.map((g) => [g.key, g.options[0].id])) as Variants
+export const DEFAULT_VARIANTS: Variants = Object.fromEntries(VARIANT_GROUPS.map((g) => [g.key, g.options[0].id]))
