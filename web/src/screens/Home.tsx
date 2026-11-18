@@ -28,9 +28,12 @@ export function Home() {
   const [openId, setOpenId] = useState<number | null>(null)
   const [shown, setShown] = useState(false)
   const [month, setMonth] = useState(false)
+  const [from, setFrom] = useState<'top' | 'bottom'>('top')
   // Чашка остаётся в состоянии, пока шторка уезжает, иначе содержимое пропало бы раньше неё.
   const opened = CUPS.find((c) => c.id === openId)
-  const open = (id: number) => {
+  /** Из календаря рябь входит в детали снизу, с главной сверху. */
+  const open = (id: number, edge: 'top' | 'bottom' = 'top') => {
+    setFrom(edge)
     setOpenId(id)
     setShown(true)
   }
@@ -58,9 +61,9 @@ export function Home() {
         </section>
       ))}
 
-      <MonthSheet open={month} onClose={() => setMonth(false)} onOpenCup={open} />
+      <MonthSheet open={month} onClose={() => setMonth(false)} onOpenCup={(id) => open(id, 'bottom')} />
 
-      <GlassSheet open={shown && !!opened} label={opened?.name ?? ''} tint={opened && TEA_COLOR[opened.type]} onClose={() => setShown(false)}>
+      <GlassSheet open={shown && !!opened} label={opened?.name ?? ''} tint={opened && TEA_COLOR[opened.type]} rippleFrom={from} onClose={() => setShown(false)}>
         {opened && (
           <>
             <div className="sheet-head">

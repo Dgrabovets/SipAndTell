@@ -10,17 +10,21 @@ interface Props {
   children: ReactNode
   /** Цвет чая: шторка подкрашивается им, как карточка. */
   tint?: string
+  /** Узкая шторка (календарь): на широком экране не растягивается на всю ширину. */
+  narrow?: boolean
+  /** Откуда в шторку входит рябь от нажатия на карточку: сверху или снизу. */
+  rippleFrom?: 'top' | 'bottom'
 }
 
 /** Стеклянная шторка снизу, выезжает снизу. Закрывается крестиком, смахиванием за «ручку» или тапом по фону.
  *  Рябь от нажатия на карточку перетекает сюда, когда шторка открывается. */
-export function GlassSheet({ open, label, onClose, children, tint }: Props) {
+export function GlassSheet({ open, label, onClose, children, tint, narrow, rippleFrom = 'top' }: Props) {
   const controls = useDragControls()
   const sheet = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (open && sheet.current) flowRippleInto(sheet.current)
-  }, [open])
+    if (open && sheet.current) flowRippleInto(sheet.current, rippleFrom)
+  }, [open, rippleFrom])
 
   return (
     <AnimatePresence>
@@ -29,7 +33,7 @@ export function GlassSheet({ open, label, onClose, children, tint }: Props) {
           <motion.div className="sheet-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
           <motion.div
             ref={sheet}
-            className={tint ? 'sheet tinted' : 'sheet'}
+            className={['sheet', tint && 'tinted', narrow && 'narrow'].filter(Boolean).join(' ')}
             role="dialog"
             aria-label={label}
             style={{ '--dot': tint } as CSSProperties}

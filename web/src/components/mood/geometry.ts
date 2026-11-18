@@ -26,18 +26,28 @@ export function anchorOf(i: number): 'start' | 'middle' | 'end' {
   return Math.abs(x) < 0.2 ? 'middle' : x > 0 ? 'start' : 'end'
 }
 
-/** Время в секундах, обновляется каждый кадр, пока включено и не просили поменьше движения. */
-export function useClock(on: boolean): number {
-  const [t, setT] = useState(0)
+const WAVE_WAITS_S = 1.4
+const WAVE_LASTS_S = 6.5
+const WAVE_SWINGS = 3.5
+
+/** Волна по вершинам: после роста бежит 3–4 круга, амплитуда нарастает и затухает, потом всё замирает.
+ *  amp от 0 до 1, phase это фаза в радианах. Пока просят меньше движения, волны нет. */
+export function useSettlingWave(): { amp: number; phase: number } {
+  const [wave, setWave] = useState({ amp: 0, phase: 0 })
   useEffect(() => {
-    if (!on || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let id = requestAnimationFrame(function tick(ms) {
-      setT(ms / 1000)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const start = performance.now() + WAVE_WAITS_S * 1000
+    let id = 0
+    const tick = (now: number) => {
+      const p = (now - start) / (WAVE_LASTS_S * 1000)
+      if (p >= 1) return setWave({ amp: 0, phase: 0 })
+      setWave({ amp: p < 0 ? 0 : Math.sin(Math.PI * p), phase: p * WAVE_SWINGS * 2 * Math.PI })
       id = requestAnimationFrame(tick)
-    })
+    }
+    id = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(id)
-  }, [on])
-  return t
+  }, [])
+  return wave
 }
 
 /** Замкнутая плавная кривая через точки (Катмулл-Ром, переведённый в кубические Безье). */

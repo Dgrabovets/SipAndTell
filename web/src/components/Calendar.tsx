@@ -1,12 +1,13 @@
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import { useState, type CSSProperties } from 'react'
 import { CUPS, TEA_COLOR } from '../data/cups'
 import { MONTHS, WEEKDAYS, dayKey, longDay, weekdayOf } from '../data/days'
 import { CupCard } from './CupCard'
 import { GlassSheet } from './GlassSheet'
 import { Icon } from './Icon'
-import { SwipeRow } from './SwipeRow'
+import { Smooth } from './Smooth'
 
+const WEEKS = 6
 const cupsOf = (key: string) => CUPS.filter((c) => dayKey(c.date) === key)
 
 /** Кнопка в шапке, открывает шторку с месяцем. */
@@ -18,6 +19,12 @@ export function CalendarButton({ onClick }: { onClick: () => void }) {
   )
 }
 
+/** 42 дня: шесть полных недель, чтобы календарь не менял высоту. Дни соседних месяцев тоже есть. */
+function monthCells(year: number, month: number): Date[] {
+  const start = new Date(year, month, 1 - weekdayOf(new Date(year, month, 1)))
+  return Array.from({ length: WEEKS * 7 }, (_, i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i))
+}
+
 interface Props {
   open: boolean
   onClose: () => void
@@ -25,25 +32,24 @@ interface Props {
   onOpenCup: (id: number) => void
 }
 
-/** Шторка с месяцем по центру. Под числами точки цвета выпитых чаёв, тап по дню показывает чашки этого дня теми же карточками, что на главной. */
+/** Компактная шторка с месяцем. Размер постоянный: всегда шесть рядов. Месяцы листаются со сдвигом,
+ *  тап по дню показывает его чашки теми же карточками, что на главной. Высота списка под месяцем меняется плавно. */
 export function MonthSheet({ open, onClose, onOpenCup }: Props) {
   const [now] = useState(() => new Date())
-  const [shown, setShown] = useState({ year: now.getFullYear(), month: now.getMonth() })
+  const [shown, setShown] = useState({ year: now.getFullYear(), month: now.getMonth(), dir: 1 })
   const [peek, setPeek] = useState(dayKey(now))
-  const first = new Date(shown.year, shown.month, 1)
-  const count = new Date(shown.year, shown.month + 1, 0).getDate()
   const today = dayKey(now)
-  const cells = [...Array(weekdayOf(first)).fill(null), ...Array.from({ length: count }, (_, i) => new Date(shown.year, shown.month, i + 1))]
   const dayCups = cupsOf(peek)
   const peekDate = new Date(`${peek}T12:00:00`)
+  const monthKey = shown.year * 12 + shown.month
 
   const step = (delta: number) => {
     const d = new Date(shown.year, shown.month + delta, 1)
-    setShown({ year: d.getFullYear(), month: d.getMonth() })
+    setShown({ year: d.getFullYear(), month: d.getMonth(), dir: delta })
   }
 
   return (
-    <GlassSheet open={open} label="Календарь" onClose={onClose}>
+    <GlassSheet open={open} label="Календарь" narrow onClose={onClose}>
       <div className="cal-head">
         <button className="round-icon" aria-label="Предыдущий месяц" onClick={() => step(-1)}>
           <Icon name="back" />
@@ -55,34 +61,53 @@ export function MonthSheet({ open, onClose, onOpenCup }: Props) {
           <Icon name="forward" />
         </button>
       </div>
-      <div className="cal-grid">
+
+      <div className="cal-weekdays">
         {WEEKDAYS.map((w) => (
           <small key={w}>{w}</small>
         ))}
-        {cells.map((d, i) => {
-          if (!d) return <span key={`gap${i}`} />
-          const key = dayKey(d)
-          const colors = [...new Set(cupsOf(key).map((c) => TEA_COLOR[c.type]))]
-          return (
-            <button key={key} className="cal-day" style={{ '--today': key === today ? 1 : 0 } as CSSProperties} aria-pressed={peek === key} onClick={() => setPeek(key)}>
-              <b>{d.getDate()}</b>
-              <span className="cal-dots" aria-hidden>
-                {colors.slice(0, 3).map((c) => (
-                  <i key={c} style={{ background: c }} />
-                ))}
-              </span>
-            </button>
-          )
-        })}
+      </div>
+      <div className="cal-pane">
+        <AnimatePresence mode="popLayout" initial={false} custom={shown.dir}>
+          <motion.div
+            key={monthKey}
+            className="cal-grid"
+            custom={shown.dir}
+            variants={{
+              enter: (dir: number) => ({ x: dir * 60, opacity: 0 }),
+              show: { x: 0, opacity: 1 },
+              leave: (dir: number) => ({ x: dir * -60, opacity: 0 }),
+            }}
+            initial="enter"
+            animate="show"
+            exit="leave"
+            transition={{ duration: 0.32, ease: [0.3, 0.7, 0.3, 1] }}
+          >
+            {monthCells(shown.year, shown.month).map((d) => {
+              const key = dayKey(d)
+              const colors = [...new Set(cupsOf(key).map((c) => TEA_COLOR[c.type]))]
+              return (
+                <button key={key} className={d.getMonth() === shown.month ? 'cal-day' : 'cal-day out'} style={{ '--today': key === today ? 1 : 0 } as CSSProperties} aria-pressed={peek === key} onClick={() => setPeek(key)}>
+                  <b>{d.getDate()}</b>
+                  <span className="cal-dots" aria-hidden>
+                    {colors.slice(0, 3).map((c) => (
+                      <i key={c} style={{ background: c }} />
+                    ))}
+                  </span>
+                </button>
+              )
+            })}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <section className="agenda" aria-label={longDay(peekDate)}>
         <h3>{longDay(peekDate)}</h3>
-        {dayCups.length === 0 && <p>В этот день чая не было</p>}
-        <ul className="list">
-          {dayCups.map((cup, i) => (
-            <motion.li key={`${peek}-${cup.id}`} initial={{ opacity: 0, x: -70 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 + i * 0.08, type: 'spring', stiffness: 260, damping: 24 }}>
-              <SwipeRow>
+        <Smooth>
+          {dayCups.length === 0 && <p>В этот день чая не было</p>}
+          <ul className="list">
+            {dayCups.map((cup, i) => (
+              <motion.li key={`${peek}-${cup.id}`} initial={{ opacity: 0, x: -70 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 + i * 0.08, type: 'spring', stiffness: 260, damping: 24 }}>
                 <CupCard
                   cup={cup}
                   index={i}
@@ -91,10 +116,10 @@ export function MonthSheet({ open, onClose, onOpenCup }: Props) {
                     onOpenCup(cup.id)
                   }}
                 />
-              </SwipeRow>
-            </motion.li>
-          ))}
-        </ul>
+              </motion.li>
+            ))}
+          </ul>
+        </Smooth>
       </section>
     </GlassSheet>
   )

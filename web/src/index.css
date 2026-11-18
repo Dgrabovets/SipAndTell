@@ -399,19 +399,6 @@ button:focus-visible {
   stroke-linejoin: round;
 }
 
-.breathe {
-  animation: breathe 5s ease-in-out infinite alternate;
-}
-
-@keyframes breathe {
-  from {
-    transform: scale(0.96);
-  }
-  to {
-    transform: scale(1.04);
-  }
-}
-
 .cell {
   transform-box: fill-box;
   transform-origin: center;
@@ -470,7 +457,6 @@ button:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .breathe,
   .cell.pulse {
     animation: none;
   }
@@ -1043,59 +1029,6 @@ button:focus-visible {
   gap: 12px;
 }
 
-.cal-dots {
-  display: flex;
-  gap: 3px;
-  height: 6px;
-}
-
-.cal-dots i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-/* Календарь: месяц в шторке */
-.cal-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px 4px;
-  text-align: center;
-}
-
-.cal-grid small {
-  color: var(--hint);
-  font-size: 12px;
-}
-
-.cal-day {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  min-height: 48px;
-  padding: 6px 0 4px;
-  border: 1px solid transparent;
-  border-radius: 14px;
-}
-
-.cal-day[style*='--today: 1'] {
-  border-color: var(--glass-edge);
-}
-
-.cal-day[aria-pressed='true'] {
-  border-color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 22%, transparent);
-}
-
 /* Друзья: одна шкала, у каждого свой цвет */
 .scale {
   position: relative;
@@ -1183,31 +1116,10 @@ button:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
-/* Календарь: список чашек дня под месяцем */
-.agenda {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid var(--glass-edge);
-}
-
-.agenda h3 {
-  margin-bottom: 8px;
-  color: var(--hint);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
 .sheet .agenda p {
   margin: 0;
 }
 
-
-.cal-head .sheet-title {
-  font-size: 20px;
-  white-space: nowrap;
-}
 
 /* Пар: отдельный слой поверх всего, не зависит от шторки и кликов */
 .steam-layer {
@@ -1238,41 +1150,8 @@ button:focus-visible {
   }
 }
 
-/* Календарь: месяц по центру */
-.cal-head {
-  margin-top: 36px;
-  padding: 0 8px;
-}
-
-.cal-grid {
-  max-width: 340px;
-  margin: 0 auto;
-}
-
-/* Сводка: тонкая плашка */
-.sum-line {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 14px;
-  padding: 10px 16px;
-  border: 1px solid var(--glass-edge);
-  border-radius: 999px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-filter);
-  -webkit-backdrop-filter: var(--glass-filter);
-  color: var(--hint);
-  font-size: 13px;
-}
-
-.sum-line b {
-  color: var(--text);
-  font-size: 16px;
-}
-
 /* Сводка: неделя столбиками */
-.sum-week,
-.sum-ring {
+.sum-week {
   margin-top: 14px;
   padding: 14px 16px;
   border: 1px solid var(--glass-edge);
@@ -1347,72 +1226,338 @@ button:focus-visible {
   color: var(--text);
 }
 
-/* Сводка: кольцо средней оценки */
-.sum-ring {
-  display: flex;
-  align-items: center;
-  gap: 18px;
+
+/* Плавная высота */
+.smooth {
+  overflow: hidden;
+  /* запас снизу, чтобы тень карточек не обрезалась */
+  margin-bottom: -16px;
 }
 
-.big-ring {
-  position: relative;
+.smooth-inner {
+  padding-bottom: 16px;
+}
+
+/* Календарь: компактный, постоянного размера */
+.sheet.narrow {
+  width: min(360px, 100%);
+}
+
+.cal-head {
+  max-width: 300px;
+  margin: 36px auto 8px;
+  padding: 0;
+}
+
+.cal-weekdays,
+.cal-pane {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.cal-weekdays {
   display: grid;
-  flex: none;
-  place-items: center;
-  width: var(--size);
-  height: var(--size);
+  grid-template-columns: repeat(7, 1fr);
+  height: 18px;
+  text-align: center;
 }
 
-.big-ring svg {
-  position: absolute;
-  inset: 0;
-}
-
-.big-ring b {
-  font-size: 26px;
-}
-
-.sum-ring p {
-  color: var(--hint);
-  font-size: 14px;
-}
-
-.sum-ring p b {
-  color: var(--text);
-  font-size: 17px;
-}
-
-.sum-ring small {
+.cal-weekdays small {
   color: var(--hint);
   font-size: 12px;
 }
 
-/* Радар: бегущая искра по контуру */
-.radar-spark {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 7 93;
-  filter: drop-shadow(0 0 4px #fff);
-  animation: radar-spark 4s linear infinite;
+/* шесть рядов по 44px: высота не зависит от месяца */
+.cal-pane {
+  position: relative;
+  height: 264px;
+  overflow: hidden;
 }
 
-@keyframes radar-spark {
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 44px;
+}
+
+.cal-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.cal-day.out {
+  opacity: 0.35;
+}
+
+.cal-day[style*='--today: 1'] {
+  border-color: var(--glass-edge);
+}
+
+.cal-day[aria-pressed='true'] {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 22%, transparent);
+}
+
+.cal-dots {
+  display: flex;
+  gap: 3px;
+  height: 5px;
+}
+
+.cal-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.agenda {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--glass-edge);
+  max-width: 320px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Вкладки в деталях */
+.tabs {
+  position: relative;
+  display: flex;
+  margin: 14px 0 4px;
+}
+
+.tabs button {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  color: var(--hint);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.tabs button[aria-selected='true'] {
+  color: var(--text);
+}
+
+.tabs .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.tabs button > :not(.tab-mark) {
+  position: relative;
+}
+
+.tabs[data-style='segment'] {
+  padding: 4px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.06);
+}
+
+.tabs[data-style='segment'] .tab-mark {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dot, var(--primary)) 30%, rgb(255 255 255 / 0.08));
+  box-shadow: inset 0 1px 0 var(--glass-shine);
+}
+
+.tabs[data-style='underline'] {
+  border-bottom: 1px solid var(--glass-edge);
+}
+
+.tabs[data-style='underline'] .tab-mark {
+  position: absolute;
+  right: 18%;
+  bottom: -1px;
+  left: 18%;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--dot, var(--primary));
+  box-shadow: 0 0 10px var(--dot, var(--primary));
+}
+
+.tabs[data-style='pager'] {
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.pager-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.pager-dots button {
+  flex: none;
+  width: 22px;
+  min-height: 22px;
+  padding: 0;
+}
+
+.pager-dots button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.25);
+}
+
+.pager-dots i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--dot, var(--primary));
+  box-shadow: 0 0 10px var(--dot, var(--primary));
+}
+
+.tabs[data-style='pager'] b {
+  font-size: 15px;
+}
+
+.tabs[data-style='pager'] small {
+  color: var(--hint);
+  font-size: 12px;
+}
+
+/* Вкладка «О чае» */
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 14px;
+}
+
+.about > section,
+.about > ul {
+  margin-top: 0;
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  margin: 0;
+  padding: 4px 12px;
+  border: 1px solid color-mix(in srgb, var(--primary) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ai-badge .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.about h3 {
+  margin-bottom: 4px;
+  color: var(--hint);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sheet .about p {
+  margin: 0;
+  color: var(--text);
+}
+
+.sheet .about .ai-badge {
+  color: var(--primary);
+}
+
+.about-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-note {
+  color: var(--hint);
+  font-size: 12px;
+}
+
+.about-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about-skeleton i {
+  height: 16px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.06));
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+.about-skeleton i:nth-child(2) {
+  width: 70%;
+}
+
+.about-skeleton i:nth-child(3) {
+  width: 90%;
+}
+
+.about-skeleton i:nth-child(4) {
+  width: 55%;
+}
+
+@keyframes shimmer {
   to {
-    stroke-dashoffset: -100;
+    background-position: -200% 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .radar-spark {
-    display: none;
+  .about-skeleton i {
+    animation: none;
   }
+}
+
+.cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-head .sheet-title {
+  font-size: 20px;
+  white-space: nowrap;
 }
 
 .cal-head .round-icon {
   flex: none;
   width: 40px;
   height: 40px;
+}
+
+.tabs[data-style='pager'] .pager-dots button > i {
+  position: absolute;
 }

@@ -26,11 +26,13 @@ export function spawnRipple(e: PointerEvent<HTMLElement>) {
   ring(e.currentTarget, e.clientX - box.left, e.clientY - box.top, 6, 0, true)
 }
 
-/** Продолжение ряби в шторке: волна выходит у верхней кромки в той же точке по горизонтали, как будто перетекла из карточки. */
-export function flowRippleInto(sheet: HTMLElement) {
+/** Продолжение ряби в шторке: волна выходит у верхней или нижней кромки в той же точке по горизонтали, как будто перетекла из карточки. */
+export function flowRippleInto(sheet: HTMLElement, from: 'top' | 'bottom' = 'top') {
   if (pressX === null) return
-  const x = pressX - sheet.getBoundingClientRect().left
-  ring(sheet, x, 0, 9, SHEET_DELAY_MS, false)
-  ring(sheet, x, 0, 9, SHEET_DELAY_MS, true)
+  const box = sheet.getBoundingClientRect()
+  const x = pressX - box.left
+  const y = from === 'top' ? 0 : box.height
+  ring(sheet, x, y, 9, SHEET_DELAY_MS, false)
+  ring(sheet, x, y, 9, SHEET_DELAY_MS, true)
   pressX = null
 }

@@ -1,9 +1,7 @@
 import { motion } from 'motion/react'
-import { useState, type CSSProperties, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { CUPS, TEA_COLOR, type Cup } from '../data/cups'
 import { WEEKDAYS, dayKey, weekdayOf } from '../data/days'
-import { useVariants } from '../variants/useVariants'
-import { CountUp } from './CountUp'
 
 const WEEK_DAYS = 7
 const DAY_MS = 86_400_000
@@ -30,41 +28,6 @@ function weekStats(now: Date) {
 
 type Stats = ReturnType<typeof weekStats>
 
-/** Три плитки: чаепитий, средняя оценка, любимый тип. */
-function Tiles({ s }: { s: Stats }) {
-  return (
-    <div className="stats">
-      {[
-        [String(s.count), 'чаепитий'],
-        [oneDecimal(s.average), 'средняя оценка'],
-        [s.favourite, 'любимый тип'],
-      ].map(([value, label], i) => (
-        <motion.div key={label} className="stat" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.08 }}>
-          <b>{value}</b>
-          <span>{label}</span>
-        </motion.div>
-      ))}
-    </div>
-  )
-}
-
-/** Одна тонкая плашка: три показателя в строке, занимает вдвое меньше места. */
-function Line({ s }: { s: Stats }) {
-  return (
-    <motion.div className="sum-line" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-      <span>
-        <b>{s.count}</b> чаепитий
-      </span>
-      <span>
-        <b>{oneDecimal(s.average)}</b> средняя
-      </span>
-      <span>
-        <b>{s.favourite}</b> любимый
-      </span>
-    </motion.div>
-  )
-}
-
 /** Неделя столбиками: каждая чашка кубик цвета чая, сегодня подсвечен. Под столбиками итог одной строкой. */
 function Week({ s }: { s: Stats }) {
   return (
@@ -88,42 +51,8 @@ function Week({ s }: { s: Stats }) {
   )
 }
 
-const RING = 30
-const CIRCUMFERENCE = 2 * Math.PI * RING
-
-/** Кольцо средней оценки слева, справа число чаепитий и любимый тип. */
-function Ring({ s }: { s: Stats }) {
-  return (
-    <motion.div className="sum-ring" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-      <span className="big-ring" style={{ '--size': '84px' } as CSSProperties}>
-        <svg viewBox="-36 -36 72 72" aria-hidden>
-          <circle className="ring-track" r={RING} />
-          <motion.circle className="ring-fill" r={RING} strokeDasharray={CIRCUMFERENCE} initial={{ strokeDashoffset: CIRCUMFERENCE }} animate={{ strokeDashoffset: CIRCUMFERENCE * (1 - s.average / 10) }} transition={{ duration: 1.2, delay: 0.3, ease: [0.2, 0.8, 0.2, 1] }} />
-        </svg>
-        <b>{oneDecimal(s.average)}</b>
-      </span>
-      <div>
-        <p>
-          <b>
-            <CountUp to={s.count} delay={0.3} />
-          </b>{' '}
-          чаепитий за неделю
-        </p>
-        <p>
-          Любимый тип <b>{s.favourite}</b>
-        </p>
-        <small>средняя оценка в кольце</small>
-      </div>
-    </motion.div>
-  )
-}
-
-const SUMMARIES = { tiles: Tiles, line: Line, week: Week, ring: Ring }
-
-/** Шапка главной: приветствие, сводка недели (вид выбирается в панели «Вид») и справа место под действие. */
+/** Шапка главной: приветствие, сводка недели и справа место под действие. */
 export function Header({ action }: { action?: ReactNode }) {
-  const { variants } = useVariants()
-  const Summary = SUMMARIES[variants.summary as keyof typeof SUMMARIES]
   const [now] = useState(() => new Date())
   const s = weekStats(now)
 
@@ -138,7 +67,7 @@ export function Header({ action }: { action?: ReactNode }) {
         </div>
         {action}
       </div>
-      <Summary s={s} />
+      <Week s={s} />
     </>
   )
 }
