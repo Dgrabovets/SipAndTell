@@ -37,18 +37,43 @@
   color-scheme: light dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #1a1410;
-    --surface: #251d17;
-    --surface-2: #30261e;
-    --line: #3b3027;
-    --text: #f3ebe2;
-    --hint: #a8978a;
-    --primary: var(--amber-400);
-    --on-primary: #1a1410;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 6px 18px rgb(0 0 0 / 0.25);
-  }
+/* Тёмная тема. Атрибут data-theme ставит App из настроек системы (позже из Telegram). */
+:root[data-theme='dark'] {
+  --bg: #1a1410;
+  --surface: #251d17;
+  --surface-2: #30261e;
+  --line: #3b3027;
+  --text: #f3ebe2;
+  --hint: #a8978a;
+  --primary: var(--amber-400);
+  --on-primary: #1a1410;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 6px 18px rgb(0 0 0 / 0.25);
+}
+
+/* Палитры на выбор (пока идёт обсуждение). «Чайный дом» это значения выше. */
+:root[data-palette='matcha'] {
+  --bg: #f4f7ef; --surface: #ffffff; --surface-2: #e7eedd; --line: #d3dfc3;
+  --text: #1f2a1c; --hint: #5f6f58; --primary: #3f6b3a; --on-primary: #ffffff;
+}
+:root[data-palette='matcha'][data-theme='dark'] {
+  --bg: #111a12; --surface: #1a251b; --surface-2: #243225; --line: #2f4031;
+  --text: #e8f1e3; --hint: #94a88f; --primary: #8cc27f; --on-primary: #10190f;
+}
+:root[data-palette='hibiscus'] {
+  --bg: #fdf6f5; --surface: #ffffff; --surface-2: #f8e6e4; --line: #efd2cf;
+  --text: #2d1618; --hint: #7d5a5c; --primary: #a63d56; --on-primary: #ffffff;
+}
+:root[data-palette='hibiscus'][data-theme='dark'] {
+  --bg: #1b1114; --surface: #27191d; --surface-2: #34222a; --line: #442c35;
+  --text: #f6e9ea; --hint: #b49a9e; --primary: #ee8aa0; --on-primary: #1b1114;
+}
+:root[data-palette='dusk'] {
+  --bg: #f6f4fb; --surface: #ffffff; --surface-2: #e9e5f5; --line: #d9d2ec;
+  --text: #1d1830; --hint: #6a6286; --primary: #5b43b5; --on-primary: #ffffff;
+}
+:root[data-palette='dusk'][data-theme='dark'] {
+  --bg: #14121f; --surface: #1e1b2e; --surface-2: #2a263f; --line: #38334f;
+  --text: #eeeaf8; --hint: #9d96b8; --primary: #f0b36a; --on-primary: #14121f;
 }
 
 * {
@@ -268,7 +293,10 @@ button:focus-visible {
 .dev-switch {
   position: fixed;
   top: 8px;
+  left: 8px;
   right: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
   display: flex;
   gap: 4px;
   padding: 4px;
@@ -280,6 +308,8 @@ button:focus-visible {
 
 .dev-switch button {
   min-width: 40px;
+  padding: 0 8px;
+  font-size: 13px;
   min-height: 40px;
   border-radius: 9px;
   font-weight: 650;
