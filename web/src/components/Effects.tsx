@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { useState, type CSSProperties } from 'react'
-import { CUPS, EFFECTS_COUNT, TEA_COLOR, YOU_COLOR, type Cup } from '../data/cups'
+import { CUPS, EFFECTS_COUNT, type Cup } from '../data/cups'
 import { useVariants } from '../variants/useVariants'
 
 /** Названия семи осей, порядок как в данных чашки. Как в дневнике, прошедшим временем от первого лица. */
@@ -11,8 +11,6 @@ interface Series {
   name: string
   color: string
   values: number[]
-  /** Рисовать контуром, а не заливкой: отличается формой, а не цветом. */
-  outline?: boolean
 }
 
 type Mode = 'both' | 'versus'
@@ -22,63 +20,55 @@ const MODES: { id: Mode; label: string }[] = [
   { id: 'versus', label: 'С другим чаем' },
 ]
 
-const SKY = '#6fb7e0'
-const MINT = '#7fd1b9'
-const CREAM = '#f3ebe2'
-/** Цвет чая на тёмном фоне осветлён, иначе тёмные чаи (пуэр) почти не видны. */
-const bright = (tea: string) => `color-mix(in srgb, ${tea} 55%, white)`
+/** Пары цветов для режима «Ты и друзья». Первый цвет твой, второй средний по друзьям. */
+const PAIRS: Record<string, [string, string]> = {
+  amberLilac: ['#f2a33a', '#b78cf5'],
+  coralTeal: ['#ff7a6b', '#4fd1c5'],
+  goldPink: ['#f5c542', '#f06fa8'],
+}
+
+/** Яркие цвета типов чая для графика: на тёмном фоне они должны различаться с первого взгляда. */
+const TEA_CHART: Record<string, string> = {
+  Улун: '#f2a33a',
+  Зелёный: '#7ed957',
+  Пуэр: '#d4623f',
+  Чёрный: '#ff5a8a',
+  Белый: '#efe3b8',
+}
+
+/** Если сравнивают два чая одного типа, второму достаётся бирюзовый. */
+const SAME_TYPE = '#3fe0cf'
+
+/** Число из десяти с одной десятой: средние значения не должны округляться до целого. */
+const tenths = (v: number) => (v * 10).toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
 const averageOf = (list: number[][]) => Array.from({ length: EFFECTS_COUNT }, (_, a) => list.reduce((sum, v) => sum + v[a], 0) / list.length)
 
-type Numbers = 'plain' | 'tip' | 'delta'
-
-/** Полоски по одной на эффект: длина пружинит к значению. Числа: справа у каждой полоски, на кончике полоски
- *  или только разница между двумя линиями. */
-function Bars({ series, numbers }: { series: Series[]; numbers: Numbers }) {
+/** Полоски по одной на эффект, между эффектами тонкая линия. Длина пружинит к значению, справа число из десяти. */
+function Bars({ series }: { series: Series[] }) {
   return (
-    <div className="eff-bars" data-nums={numbers}>
-      {LABELS.map((label, a) => {
-        const diff = Math.round(series[0].values[a] * 10) - Math.round(series[1].values[a] * 10)
-        return (
-          <div className="eff-bar" key={label}>
-            <span>{label}</span>
-            <div className="eff-lines">
-              {series.map((s) => {
-                const pct = `${s.values[a] * 100}%`
-                const spring = { type: 'spring' as const, stiffness: 120, damping: 16, delay: a * 0.05 }
-                return (
-                  <span className="eff-line" key={s.name}>
-                    <span className="eff-track">
-                      <motion.i className={s.outline ? 'outline' : undefined} style={{ '--c': s.color } as CSSProperties} initial={{ width: 0 }} animate={{ width: pct }} transition={spring} />
-                      {numbers === 'tip' && (
-                        <motion.em className="tip" style={{ color: s.color }} initial={{ left: 0 }} animate={{ left: pct }} transition={spring}>
-                          {Math.round(s.values[a] * 10)}
-                        </motion.em>
-                      )}
-                    </span>
-                    {numbers === 'plain' && <em>{Math.round(s.values[a] * 10)}</em>}
-                  </span>
-                )
-              })}
-            </div>
-            {numbers === 'delta' && <b className={diff > 0 ? 'up' : diff < 0 ? 'down' : ''}>{diff > 0 ? `+${diff}` : diff < 0 ? `−${Math.abs(diff)}` : '0'}</b>}
+    <div className="eff-bars">
+      {LABELS.map((label, a) => (
+        <div className="eff-bar" key={label}>
+          <span>{label}</span>
+          <div className="eff-lines">
+            {series.map((s) => (
+              <span className="eff-line" key={s.name}>
+                <span className="eff-track">
+                  <motion.i style={{ '--c': s.color } as CSSProperties} initial={{ width: 0 }} animate={{ width: `${s.values[a] * 100}%` }} transition={{ type: 'spring', stiffness: 120, damping: 16, delay: a * 0.05 }} />
+                </span>
+                <em>{tenths(s.values[a])}</em>
+              </span>
+            ))}
           </div>
-        )
-      })}
+        </div>
+      ))}
     </div>
   )
 }
 
-/** Цвета двух линий. pair: янтарный и голубой всегда, поэтому два одинаковых чая не сливаются.
- *  tea: цвета самих чаёв, а при одинаковом типе второй берёт мятный. outline: первая линия заливкой, вторая контуром. */
-function colorsOf(scheme: string, mode: Mode, a: Cup, b: Cup): { colors: [string, string]; outline: boolean } {
-  if (scheme === 'tea' && mode === 'versus') return { colors: [bright(TEA_COLOR[a.type]), a.type === b.type ? MINT : bright(TEA_COLOR[b.type])], outline: false }
-  if (scheme === 'outline') return { colors: [YOU_COLOR, CREAM], outline: true }
-  return { colors: [YOU_COLOR, SKY], outline: false }
-}
-
 /** Вкладка «Эффект». Два режима: твоя оценка рядом со средней по друзьям и сравнение твоей оценки с другим чаем.
- *  Цвета линий и подача чисел выбираются в панели «Вид». */
+ *  Пара цветов для «Ты и друзья» выбирается в панели «Вид». */
 export function EffectTab({ cup }: { cup: Cup }) {
   const { variants } = useVariants()
   const [mode, setMode] = useState<Mode>('both')
@@ -87,21 +77,21 @@ export function EffectTab({ cup }: { cup: Cup }) {
   const other = others.find((c) => c.id === pickedId) ?? others[0]
   const friendNames = Object.keys(cup.effects).filter((n) => n !== 'Ты')
   const mine = cup.effects['Ты']
-  const { colors, outline } = colorsOf(variants.effectColors, mode, cup, other)
+  const pair = PAIRS[variants.effectPair]
+  const sameTea = cup.type === other.type
 
   const series: Series[] =
     mode === 'both'
       ? [
-          { name: 'Ты', color: colors[0], values: mine },
-          { name: 'Друзья в среднем', color: colors[1], outline, values: averageOf(friendNames.map((n) => cup.effects[n])) },
+          { name: 'Ты', color: pair[0], values: mine },
+          { name: 'Друзья', color: pair[1], values: averageOf(friendNames.map((n) => cup.effects[n])) },
         ]
       : [
-          { name: cup.name, color: colors[0], values: mine },
-          { name: other.name, color: colors[1], outline, values: other.effects['Ты'] },
+          { name: cup.name, color: TEA_CHART[cup.type], values: mine },
+          { name: other.name, color: sameTea ? SAME_TYPE : TEA_CHART[other.type], values: other.effects['Ты'] },
         ]
 
-  const base = mode === 'both' ? `Друзья, которых посчитали: ${friendNames.join(', ')}.` : 'Твои ощущения от двух чаёв рядом.'
-  const caption = variants.effectNumbers === 'delta' ? `${base} Справа разница между первой и второй линией.` : base
+  const caption = mode === 'both' ? `Друзья, которых посчитали: ${friendNames.join(', ')}.` : 'Твои ощущения от двух чаёв рядом.'
 
   return (
     <div className="details effect-tab">
@@ -131,7 +121,7 @@ export function EffectTab({ cup }: { cup: Cup }) {
           </span>
         ))}
       </p>
-      <Bars series={series} numbers={variants.effectNumbers as Numbers} />
+      <Bars series={series} />
       <p className="mood-caption">{caption}</p>
     </div>
   )
