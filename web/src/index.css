@@ -680,8 +680,8 @@ button:focus-visible {
   position: relative;
   display: inline-grid;
   place-items: center;
-  width: 56px;
-  height: 56px;
+  width: var(--size, 56px);
+  height: var(--size, 56px);
 }
 
 .score-ring svg,
@@ -691,7 +691,7 @@ button:focus-visible {
 }
 
 .score-ring b {
-  font-size: 20px;
+  font-size: calc(var(--size, 56px) * 0.36);
 }
 
 .ring-track,
@@ -705,7 +705,7 @@ button:focus-visible {
 }
 
 .ring-fill {
-  stroke: var(--primary);
+  stroke: var(--ring-color, var(--primary));
   stroke-linecap: round;
   transform: rotate(-90deg);
 }
@@ -956,7 +956,7 @@ button:focus-visible {
 }
 
 /* Свечение: кольцо расходится от кнопки, в покое кнопка мягко дышит */
-.main-btn.glow {
+.main-btn[data-fx='glow'] {
   animation: breathe-glow 3.4s ease-in-out infinite;
 }
 
@@ -1090,7 +1090,7 @@ button:focus-visible {
   box-shadow: 0 0 10px var(--primary);
 }
 
-.nav.dot button[aria-current='page'] {
+.nav[data-style='dot'] button[aria-current='page'] {
   color: var(--primary);
 }
 
@@ -1196,4 +1196,151 @@ button:focus-visible {
 .is-row .chip {
   padding: 3px 9px;
   font-size: 12.5px;
+}
+
+/* Оценка полукругом */
+.ring-fill.arc {
+  transform: none;
+}
+
+.score-arc {
+  height: calc(var(--size, 56px) * 0.72);
+}
+
+.score-arc b {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  font-size: calc(var(--size, 56px) * 0.34);
+}
+
+/* Карточка: поверхность */
+.hero-cup.surface-plain {
+  background: var(--glass-bg);
+}
+
+.hero-cup.surface-stripe {
+  background: var(--glass-bg);
+  box-shadow:
+    inset 5px 0 0 var(--dot),
+    inset 0 1px 0 var(--glass-shine),
+    0 10px 30px rgb(0 0 0 / 0.28);
+}
+
+.hero-cup.surface-glow {
+  border-color: color-mix(in srgb, var(--dot) 70%, transparent);
+  background: var(--glass-bg);
+  box-shadow:
+    0 0 22px color-mix(in srgb, var(--dot) 35%, transparent),
+    inset 0 1px 0 var(--glass-shine);
+}
+
+/* Карточка: плотность */
+.hero-cup.density-compact {
+  gap: 8px;
+  padding: 9px 13px;
+  border-radius: 18px;
+}
+
+.density-compact .hero-name {
+  font-size: 16px;
+}
+
+.density-compact .score-ring {
+  --size: 44px;
+}
+
+.density-compact .cup-main {
+  gap: 2px;
+}
+
+/* Список по дням */
+.day-label {
+  margin: 20px 4px 8px;
+  color: var(--hint);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Чип с иконками места и времени */
+.chip.icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip.icons .icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* Свайп: действия под карточкой */
+.swipe {
+  position: relative;
+}
+
+.swipe-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 6px;
+}
+
+.swipe-actions button {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.swipe-actions .danger {
+  color: #e0786a;
+}
+
+/* Детали: шапка с кольцом и варианты отзыва */
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-right: 52px;
+}
+
+.sheet-head .sheet-title {
+  padding-right: 0;
+}
+
+.review.rv-frame p,
+.review.rv-line p {
+  font-size: 17px;
+}
+
+.review.rv-frame p::before,
+.review.rv-frame p::after,
+.review.rv-line p::before,
+.review.rv-line p::after {
+  content: none;
+}
+
+.review.rv-frame {
+  padding: 14px 16px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 18px;
+  background: rgb(255 255 255 / 0.05);
+}
+
+.review.rv-line {
+  padding-left: 14px;
+  border-left: 3px solid var(--primary);
 }

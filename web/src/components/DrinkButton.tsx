@@ -17,7 +17,7 @@ export function DrinkButton({ onClick }: { onClick: () => void }) {
   }
 
   return (
-    <motion.button className={`main-btn ${variants.fab}`} aria-label="Выпил" whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.06 }} transition={{ type: 'spring', stiffness: 500, damping: 20 }} onClick={press}>
+    <motion.button className="main-btn" data-fx={variants.fab} aria-label="Выпил" whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.06 }} transition={{ type: 'spring', stiffness: 500, damping: 20 }} onClick={press}>
       {variants.fab === 'glow' && presses > 0 && <span key={presses} className="halo" />}
       <motion.span className="btn-icon" animate={{ rotate: presses * 90 }} transition={{ type: 'spring', stiffness: 300, damping: 16 }}>
         <Icon name="plus" />

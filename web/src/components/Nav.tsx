@@ -23,7 +23,7 @@ export function Nav() {
   const style = variants.nav as keyof typeof SPRINGS
 
   return (
-    <nav className={`nav top ${style}`} aria-label="Разделы">
+    <nav className="nav top" data-style={style} aria-label="Разделы">
       {TABS.map((tab) => {
         const on = active === tab.id
         return (
