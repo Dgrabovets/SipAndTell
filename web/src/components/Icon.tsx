@@ -38,6 +38,9 @@ const PATHS: Record<string, ReactNode> = {
   close: <path d="M6 6l12 12M18 6L6 18" />,
   chevron: <path d="M6 9l6 6 6-6" />,
   trash: <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />,
+  plus: <path d="M12 5v14M5 12h14" />,
+  book: <path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5" />,
+  grid: <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />,
 }
 
 export function Icon({ name }: { name: string }) {

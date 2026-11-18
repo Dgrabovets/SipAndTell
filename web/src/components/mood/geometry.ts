@@ -1,9 +1,10 @@
 import { animate } from 'motion/react'
 import { useEffect, useState } from 'react'
+import { AXES } from '../../data/moods'
 
-/** Точка на окружности: вершина i шестиугольника, нулевая сверху, дальше по часовой. */
-export function vertex(i: number, radius: number, offsetDeg = 0): [number, number] {
-  const angle = ((-90 + i * 60 + offsetDeg) * Math.PI) / 180
+/** Точка на окружности: вершина i, нулевая сверху, дальше по часовой. Число вершин берётся из AXES. */
+export function vertex(i: number, radius: number): [number, number] {
+  const angle = ((-90 + (i * 360) / AXES.length) * Math.PI) / 180
   return [radius * Math.cos(angle), radius * Math.sin(angle)]
 }
 

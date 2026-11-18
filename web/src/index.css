@@ -257,16 +257,6 @@ button:focus-visible {
   pointer-events: none;
 }
 
-.hero-score {
-  position: absolute;
-  top: 14px;
-  right: 18px;
-  font-size: 40px;
-  font-weight: 700;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
 .hero-name {
   position: relative;
   display: block;
@@ -391,32 +381,6 @@ button:focus-visible {
     -webkit-backdrop-filter: none;
     background-color: var(--surface);
   }
-}
-
-/* Только для выбора варианта в разработке */
-.dev-switch {
-  position: fixed;
-  top: 8px;
-  right: 8px;
-  z-index: 30;
-  display: flex;
-  gap: 2px;
-  padding: 3px;
-  border: 1px solid var(--glass-edge);
-  border-radius: 12px;
-  background: rgb(0 0 0 / 0.35);
-}
-
-.dev-switch button {
-  min-width: 40px;
-  min-height: 40px;
-  border-radius: 9px;
-  font-weight: 650;
-}
-
-.dev-switch button[aria-pressed='true'] {
-  background: var(--primary);
-  color: var(--on-primary);
 }
 
 /* Слои: кнопка под шторкой и подложкой */
@@ -709,20 +673,6 @@ button:focus-visible {
   color: inherit;
 }
 
-.actions.round {
-  justify-content: space-around;
-  align-items: flex-start;
-}
-
-.round-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  min-width: 76px;
-  font-size: 13px;
-}
-
 .round-icon {
   display: grid;
   place-items: center;
@@ -738,14 +688,6 @@ button:focus-visible {
   flex: none;
   width: 52px;
   height: 52px;
-}
-
-.glass-btn.wide {
-  flex: 1;
-}
-
-.actions-menu {
-  margin-top: 0;
 }
 
 .popover {
@@ -771,4 +713,444 @@ button:focus-visible {
 
 .popover .danger {
   color: #e0786a;
+}
+
+/* Оценка, три вида */
+.cup-score {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+}
+
+.score-big {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-ring {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+}
+
+.score-ring svg,
+.ring-avatar svg {
+  position: absolute;
+  inset: 0;
+}
+
+.score-ring b {
+  font-size: 20px;
+}
+
+.ring-track,
+.ring-fill {
+  fill: none;
+  stroke-width: 3.5;
+}
+
+.ring-track {
+  stroke: rgb(255 255 255 / 0.12);
+}
+
+.ring-fill {
+  stroke: var(--primary);
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+}
+
+.score-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 112px;
+  justify-content: flex-end;
+}
+
+.score-dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.16);
+}
+
+.score-dots i.on {
+  background: var(--primary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 60%, transparent);
+}
+
+/* Чипы: строка и минимум */
+.chips-text,
+.chips-min {
+  position: relative;
+  display: block;
+  margin-top: 10px;
+  color: var(--hint);
+  font-size: 14px;
+}
+
+.chips-min {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mood-word {
+  font-weight: 600;
+}
+
+.tea-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--dot, var(--hint));
+}
+
+/* Карточка: строка и плитка */
+.hero-cup.is-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 22px;
+}
+
+.is-row .cup-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.is-row .hero-name {
+  margin: 0;
+  font-size: 18px;
+}
+
+.is-row .cup-score {
+  position: static;
+}
+
+.is-row .score-big {
+  font-size: 30px;
+}
+
+.is-row .chips,
+.is-row .chips-text,
+.is-row .chips-min {
+  margin-top: 2px;
+}
+
+.list.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.hero-cup.is-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 156px;
+  padding: 14px;
+  border-radius: 22px;
+}
+
+.is-tile .cup-score {
+  top: 10px;
+  right: 12px;
+}
+
+.is-tile .score-big {
+  font-size: 30px;
+}
+
+.is-tile .score-dots {
+  width: 66px;
+}
+
+.is-tile .hero-name {
+  margin: 40px 0 0;
+  font-size: 17px;
+}
+
+.is-tile .chip:nth-child(n + 2) {
+  display: none;
+}
+
+.is-tile .chips {
+  margin-top: 8px;
+}
+
+/* Шапка: сводка и компактная */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.stat {
+  padding: 14px 8px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 20px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
+  text-align: center;
+}
+
+.stat b {
+  display: block;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat span {
+  color: var(--hint);
+  font-size: 12px;
+}
+
+.head-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 64px;
+}
+
+.title.small {
+  font-size: 22px;
+}
+
+.avatar.big {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+
+/* Кнопка «Выпил»: круглая и островок */
+.main-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.main-btn .icon {
+  color: inherit;
+}
+
+.main-btn.fab {
+  left: auto;
+  right: 20px;
+  translate: none;
+  width: 64px;
+  min-height: 64px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.main-btn.island {
+  width: auto;
+  padding: 0 30px;
+}
+
+:root[data-nav='bottom'] .main-btn {
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 76px);
+}
+
+:root[data-nav='bottom'] .app {
+  padding-bottom: calc(176px + env(safe-area-inset-bottom));
+}
+
+/* Навигация */
+.nav {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.06);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
+}
+
+.nav button {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  border-radius: 999px;
+  color: var(--hint);
+  font-size: 14px;
+}
+
+.nav button[aria-current='page'] {
+  color: var(--text);
+}
+
+.nav button > :not(.nav-pill) {
+  position: relative;
+}
+
+.nav-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+  box-shadow: inset 0 1px 0 var(--glass-shine);
+}
+
+.nav .icon {
+  width: 18px;
+  height: 18px;
+  color: inherit;
+}
+
+.nav.top {
+  width: calc(100% - 64px);
+  margin: 0 0 16px;
+}
+
+.nav.bottom {
+  position: fixed;
+  left: 50%;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  translate: -50% 0;
+  z-index: 5;
+  width: min(448px, calc(100% - 32px));
+}
+
+/* Друзья: круги и обстоятельства значками */
+.ring-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  padding: 0;
+  list-style: none;
+}
+
+.ring-friend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.ring-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+}
+
+.circ-row {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  list-style: none;
+}
+
+.circ-row li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0 32px;
+  font-size: 14px;
+}
+
+.circ-row li + li {
+  border-left: 1px solid rgb(255 255 255 / 0.12);
+}
+
+.circ-row .icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* Кнопки действий: живые */
+.btn-icon {
+  display: inline-grid;
+}
+
+.glass-btn.primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-btn.primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.16) 50%, transparent 65%);
+  translate: -120% 0;
+  animation: shine 5s ease-in-out 1s infinite;
+  pointer-events: none;
+}
+
+/* Панель выбора вариантов, только в разработке */
+.vp-toggle {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 30;
+  min-width: 52px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.4);
+  font-weight: 650;
+}
+
+.vp {
+  position: fixed;
+  top: 60px;
+  right: 8px;
+  left: 8px;
+  z-index: 30;
+  max-height: 72dvh;
+  overflow-y: auto;
+  padding: 10px 14px 14px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 22px;
+  background: rgb(20 14 10 / 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.vp h3 {
+  margin: 12px 0 6px;
+  color: var(--hint);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.vp-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.vp-options button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 999px;
+}
+
+.vp-options button[aria-pressed='true'] {
+  background: var(--primary);
+  color: var(--on-primary);
 }

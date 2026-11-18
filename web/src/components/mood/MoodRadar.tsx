@@ -9,7 +9,7 @@ export function MoodRadar({ mood }: { mood: Mood }) {
   const shape = mood.map((v, i) => vertex(i, R * Math.max(v, 0.04) * t))
 
   return (
-    <svg className="mood-svg" viewBox="-150 -108 300 216" role="img" aria-label="Настроение, радар из шести осей">
+    <svg className="mood-svg" viewBox="-165 -108 330 216" role="img" aria-label="Настроение, радар из шести осей">
       {[1 / 3, 2 / 3, 1].map((k) => (
         <polygon key={k} className="mood-grid" points={pointsOf(AXES.map((_, i) => vertex(i, R * k)))} />
       ))}
