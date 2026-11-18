@@ -5,12 +5,11 @@ import { CupCard } from '../components/CupCard'
 import { CupDetails } from '../components/CupDetails'
 import { GlassSheet } from '../components/GlassSheet'
 import { Header } from '../components/Header'
-import { Icon } from '../components/Icon'
 import { Nav } from '../components/Nav'
 import { Score } from '../components/Score'
 import { SwipeRow } from '../components/SwipeRow'
 import { TEA_COLOR, CUPS, type Cup } from '../data/cups'
-import { dayGroup, dayKey, longDay } from '../data/days'
+import { dayGroup } from '../data/days'
 
 const ORDER = new Map(CUPS.map((c, i) => [c.id, i]))
 
@@ -28,47 +27,29 @@ function grouped(cups: Cup[]): [string, Cup[]][] {
 export function Home() {
   const [openId, setOpenId] = useState<number | null>(null)
   const [shown, setShown] = useState(false)
-  const [day, setDay] = useState<string | null>(null)
   const [month, setMonth] = useState(false)
   // Чашка остаётся в состоянии, пока шторка уезжает, иначе содержимое пропало бы раньше неё.
   const opened = CUPS.find((c) => c.id === openId)
-  const visible = day ? CUPS.filter((c) => dayKey(c.date) === day) : CUPS
-  const picked = visible[0]?.date ?? (day ? new Date(`${day}T12:00:00`) : null)
+  const open = (id: number) => {
+    setOpenId(id)
+    setShown(true)
+  }
 
   return (
     <>
       <Nav />
-      <Header action={<CalendarButton active={!!day} onClick={() => setMonth(true)} />} />
-      {day && picked && (
-        <button className="day-filter" onClick={() => setDay(null)}>
-          {longDay(picked)}
-          <Icon name="close" />
-        </button>
-      )}
+      <Header action={<CalendarButton onClick={() => setMonth(true)} />} />
 
-      {visible.length === 0 && (
-        <p className="empty">
-          <b>В этот день чая не было</b>
-          Нажми на выбранный день ещё раз, чтобы увидеть все.
-        </p>
-      )}
-      {grouped(visible).map(([label, cups]) => (
+      {grouped(CUPS).map(([label, cups]) => (
         <section key={label}>
-          {!day && <h2 className="day-label">{label}</h2>}
-          <ul className="list" style={{ marginTop: day ? 14 : 0 }}>
+          <h2 className="day-label">{label}</h2>
+          <ul className="list">
             {cups.map((cup) => {
               const i = ORDER.get(cup.id) ?? 0
               return (
                 <motion.li key={cup.id} initial={{ opacity: 0, x: -70 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.12 + i * 0.08, type: 'spring', stiffness: 260, damping: 24 }}>
                   <SwipeRow>
-                    <CupCard
-                      cup={cup}
-                      index={i}
-                      onOpen={() => {
-                        setOpenId(cup.id)
-                        setShown(true)
-                      }}
-                    />
+                    <CupCard cup={cup} index={i} onOpen={() => open(cup.id)} />
                   </SwipeRow>
                 </motion.li>
               )
@@ -77,16 +58,7 @@ export function Home() {
         </section>
       ))}
 
-      <MonthSheet
-        open={month}
-        selected={day}
-        onSelect={setDay}
-        onClose={() => setMonth(false)}
-        onOpenCup={(id) => {
-          setOpenId(id)
-          setShown(true)
-        }}
-      />
+      <MonthSheet open={month} onClose={() => setMonth(false)} onOpenCup={open} />
 
       <GlassSheet open={shown && !!opened} label={opened?.name ?? ''} tint={opened && TEA_COLOR[opened.type]} onClose={() => setShown(false)}>
         {opened && (

@@ -987,24 +987,6 @@ button:focus-visible {
   position: relative;
 }
 
-/* Пар по всей ширине карточки создания: клубы поднимаются снизу и тают */
-.sheet-steam {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.sheet-steam span {
-  position: absolute;
-  bottom: -40px;
-  margin-left: -45px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgb(255 255 255 / 0.4), rgb(255 255 255 / 0) 68%);
-  filter: blur(10px);
-  opacity: 0;
-  animation: sheet-steam 4200ms ease-out both;
-}
-
 @keyframes sheet-steam {
   0% {
     opacity: 0;
@@ -1020,12 +1002,6 @@ button:focus-visible {
   100% {
     opacity: 0;
     transform: translate(var(--dx, 0px), -400px) scale(2.8);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sheet-steam {
-    display: none;
   }
 }
 
@@ -1067,11 +1043,6 @@ button:focus-visible {
   gap: 12px;
 }
 
-.cal-btn.on {
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
 .cal-dots {
   display: flex;
   gap: 3px;
@@ -1084,23 +1055,6 @@ button:focus-visible {
   border-radius: 50%;
 }
 
-.day-filter {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 14px;
-  padding: 6px 12px 6px 14px;
-  border: 1px solid var(--primary);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--primary) 18%, transparent);
-  font-size: 14px;
-}
-
-.day-filter .icon {
-  width: 16px;
-  height: 16px;
-}
-
 /* Календарь: месяц в шторке */
 .cal-head {
   display: flex;
@@ -1108,7 +1062,6 @@ button:focus-visible {
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 12px;
-  padding-right: 52px;
 }
 
 .cal-grid {
@@ -1230,12 +1183,6 @@ button:focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
-/* Карточка создания: пар может выйти за её края, обрезка только снизу и со скруглением */
-.sheet.airy {
-  overflow: visible;
-  clip-path: inset(-500px -160px 0 -160px);
-}
-
 /* Календарь: список чашек дня под месяцем */
 .agenda {
   margin-top: 16px;
@@ -1256,35 +1203,216 @@ button:focus-visible {
   margin: 0;
 }
 
-.agenda-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  margin-top: 8px;
-  padding: 6px 12px;
-  border: 1px solid var(--glass-edge);
-  border-radius: 16px;
-  background: linear-gradient(150deg, color-mix(in srgb, var(--dot) 16%, transparent), transparent 70%);
-  text-align: left;
-  font-weight: 650;
-}
-
-.agenda-row small {
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--dot) 20%, transparent);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.cal-grid[data-style='tint'] .cal-day {
-  min-height: 44px;
-  justify-content: center;
-}
 
 .cal-head .sheet-title {
   font-size: 20px;
   white-space: nowrap;
+}
+
+/* Пар: отдельный слой поверх всего, не зависит от шторки и кликов */
+.steam-layer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  z-index: 17;
+  width: min(480px, 100%);
+  height: 86dvh;
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.steam-layer span {
+  position: absolute;
+  bottom: -40px;
+  margin-left: -45px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 255 255 / 0.4), rgb(255 255 255 / 0) 68%);
+  filter: blur(10px);
+  opacity: 0;
+  animation: sheet-steam 4200ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .steam-layer {
+    display: none;
+  }
+}
+
+/* Календарь: месяц по центру */
+.cal-head {
+  margin-top: 36px;
+  padding: 0 8px;
+}
+
+.cal-grid {
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+/* Сводка: тонкая плашка */
+.sum-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 16px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 999px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
+  color: var(--hint);
+  font-size: 13px;
+}
+
+.sum-line b {
+  color: var(--text);
+  font-size: 16px;
+}
+
+/* Сводка: неделя столбиками */
+.sum-week,
+.sum-ring {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 22px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
+}
+
+.week-bars {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.week-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  height: 84px;
+}
+
+.week-stack {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
+  width: 100%;
+  max-width: 28px;
+}
+
+.week-stack i {
+  height: 12px;
+  border-radius: 5px;
+  transform-origin: bottom;
+}
+
+.week-col::before {
+  content: '';
+  width: 100%;
+  max-width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.1);
+  order: 1;
+}
+
+.week-col .week-stack {
+  order: 0;
+}
+
+.week-col small {
+  order: 2;
+  color: var(--hint);
+  font-size: 12px;
+}
+
+.week-col.today small {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.sum-week p {
+  margin-top: 12px;
+  text-align: center;
+  color: var(--hint);
+  font-size: 13px;
+}
+
+.sum-week p b {
+  color: var(--text);
+}
+
+/* Сводка: кольцо средней оценки */
+.sum-ring {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.big-ring {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+}
+
+.big-ring svg {
+  position: absolute;
+  inset: 0;
+}
+
+.big-ring b {
+  font-size: 26px;
+}
+
+.sum-ring p {
+  color: var(--hint);
+  font-size: 14px;
+}
+
+.sum-ring p b {
+  color: var(--text);
+  font-size: 17px;
+}
+
+.sum-ring small {
+  color: var(--hint);
+  font-size: 12px;
+}
+
+/* Радар: бегущая искра по контуру */
+.radar-spark {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 7 93;
+  filter: drop-shadow(0 0 4px #fff);
+  animation: radar-spark 4s linear infinite;
+}
+
+@keyframes radar-spark {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-spark {
+    display: none;
+  }
+}
+
+.cal-head .round-icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
 }
