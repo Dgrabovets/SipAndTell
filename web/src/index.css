@@ -34,8 +34,7 @@
   --gap: 12px;
   --tap: 48px;
 
-  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-display: var(--font-body);
+  --font-body: 'Jost Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   /* Стекло: чем меньше альфа, тем прозрачнее */
   --glass-bg: rgb(255 255 255 / 0.02);
@@ -88,7 +87,6 @@ button:focus-visible {
 }
 
 .title {
-  font-family: var(--font-display);
   font-size: 26px;
   font-weight: 750;
   letter-spacing: -0.02em;
@@ -203,7 +201,6 @@ button:focus-visible {
 }
 
 .sheet h2 {
-  font-family: var(--font-display);
   font-size: 19px;
 }
 
@@ -250,7 +247,6 @@ button:focus-visible {
 }
 
 .hero-score {
-  font-family: var(--font-display);
   position: absolute;
   top: 14px;
   right: 18px;
@@ -261,7 +257,6 @@ button:focus-visible {
 }
 
 .hero-name {
-  font-family: var(--font-display);
   position: relative;
   display: block;
   margin: 28px 70px 0 0;
@@ -333,7 +328,42 @@ button:focus-visible {
   }
 }
 
+/* Рябь от нажатия: два кольца расходятся от точки касания */
+.ripple {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 0.4);
+  background: radial-gradient(circle, rgb(255 255 255 / 0.14), transparent 65%);
+  pointer-events: none;
+  animation: ripple 800ms cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+.ripple.second {
+  animation-delay: 120ms;
+  opacity: 0;
+}
+
+@keyframes ripple {
+  from {
+    opacity: 1;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 0;
+    transform: scale(5);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .ripple {
+    display: none;
+  }
+
   * {
     scroll-behavior: auto !important;
   }
@@ -352,55 +382,4 @@ button:focus-visible {
     -webkit-backdrop-filter: none;
     background-color: var(--surface);
   }
-}
-
-
-/* Шрифты на выбор (пока идёт обсуждение) */
-:root[data-font='lora'] {
-  --font-body: 'Manrope Variable', system-ui, sans-serif;
-  --font-display: 'Lora Variable', Georgia, serif;
-}
-
-:root[data-font='nunito'] {
-  --font-body: 'Nunito Variable', system-ui, sans-serif;
-}
-
-:root[data-font='cormorant'] {
-  --font-body: 'Raleway Variable', system-ui, sans-serif;
-  --font-display: 'Cormorant Variable', Georgia, serif;
-}
-
-:root[data-font='cormorant'] .title,
-:root[data-font='cormorant'] .hero-name,
-:root[data-font='cormorant'] .hero-score {
-  font-weight: 600;
-}
-
-:root[data-font='jost'] {
-  --font-body: 'Jost Variable', system-ui, sans-serif;
-}
-
-.font-switch {
-  position: fixed;
-  top: 8px;
-  right: 8px;
-  z-index: 10;
-  display: flex;
-  gap: 2px;
-  padding: 3px;
-  border: 1px solid var(--glass-edge);
-  border-radius: 12px;
-  background: rgb(0 0 0 / 0.3);
-}
-
-.font-switch button {
-  min-width: 40px;
-  min-height: 40px;
-  border-radius: 9px;
-  font-weight: 650;
-}
-
-.font-switch button[aria-pressed='true'] {
-  background: var(--primary);
-  color: var(--on-primary);
 }

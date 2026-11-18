@@ -1,14 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import WebApp from '@twa-dev/sdk'
-import '@fontsource-variable/manrope'
-import '@fontsource-variable/lora'
-import '@fontsource-variable/nunito'
-import '@fontsource-variable/cormorant'
-import '@fontsource-variable/raleway'
 import '@fontsource-variable/jost'
 import './index.css'
 import App from './App.tsx'
+import { webApp } from './telegram'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -17,5 +12,5 @@ createRoot(document.getElementById('root')!).render(
 )
 
 // Вне Telegram SDK ничего не делает, на экране остаются свои токены.
-WebApp.ready()
-WebApp.expand()
+webApp.ready()
+webApp.expand()

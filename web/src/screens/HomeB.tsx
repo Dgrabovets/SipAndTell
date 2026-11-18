@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import type { PointerEvent } from 'react'
 import { CountUp } from '../components/CountUp'
+import { spawnRipple } from '../components/spawnRipple'
 import { CUPS, TEA_COLOR } from '../data/cups'
 
 /** Блик на стекле идёт за пальцем или курсором. */
@@ -40,6 +41,7 @@ export function HomeB() {
               whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
               onPointerMove={moveLight}
+              onPointerDown={spawnRipple}
               onPointerLeave={resetLight}
             >
               <span className="hero-score">
