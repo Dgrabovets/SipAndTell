@@ -7,7 +7,8 @@ export interface VariantGroup {
 /** Варианты элементов, по которым ещё нет решения. Первый вариант в группе берётся по умолчанию.
  *  Когда все решено, список пуст и панель «Вид» не показывается. Выбор виден в CSS как html[data-<key>='<id>']. */
 export const VARIANT_GROUPS: readonly VariantGroup[] = [
-  { key: 'words', title: 'Вкладка «Эффект»: как называем эффекты', options: [{ id: 'verbs', label: 'Что делает чай: бодрит, успокаивает' }, { id: 'feelings', label: 'Ощущение: бодрость, спокойствие' }, { id: 'past', label: 'Как в дневнике: взбодрил, успокоил' }] },
+  { key: 'effectColors', title: 'Вкладка «Эффект»: цвета линий', options: [{ id: 'pair', label: 'Янтарный и голубой всегда' }, { id: 'tea', label: 'Цвета чаёв, при одинаковых мятный' }, { id: 'outline', label: 'Заливка и контур, цвет один' }] },
+  { key: 'effectNumbers', title: 'Вкладка «Эффект»: числа', options: [{ id: 'plain', label: 'Справа у каждой полоски' }, { id: 'tip', label: 'На кончике полоски' }, { id: 'delta', label: 'Только разница справа' }] },
 ]
 
 export type VariantKey = string
