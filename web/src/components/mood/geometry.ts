@@ -27,26 +27,69 @@ export function anchorOf(i: number): 'start' | 'middle' | 'end' {
 }
 
 const WAVE_WAITS_S = 1.4
-const WAVE_LASTS_S = 6.5
-const WAVE_SWINGS = 3.5
 
-/** Волна по вершинам: после роста бежит 3–4 круга, амплитуда нарастает и затухает, потом всё замирает.
+/** Как качаются вершины: бегущей волной, прыжками, вразнобой, всем телом вместе, проседанием или дрожью. */
+export type WaveKind = 'travel' | 'bounce' | 'sway' | 'breath' | 'sag' | 'jitter'
+
+export interface WaveProfile {
+  kind: WaveKind
+  /** Сколько раз качнётся. */
+  swings: number
+  /** Сколько длится всё движение, секунды. */
+  seconds: number
+  /** Размах как доля радиуса. */
+  amp: number
+}
+
+/** Характер движения для каждого настроения (порядок как в AXES): бодрость быстрая и широкая,
+ *  уют медленное дыхание, усталость и грусть оседают, раздражение резкое, тревога мелко дрожит. */
+export const WAVE_BY_MOOD: WaveProfile[] = [
+  { kind: 'travel', swings: 5, seconds: 4.5, amp: 0.16 },
+  { kind: 'bounce', swings: 4, seconds: 5, amp: 0.14 },
+  { kind: 'sway', swings: 3, seconds: 7, amp: 0.13 },
+  { kind: 'breath', swings: 2.5, seconds: 9, amp: 0.07 },
+  { kind: 'sag', swings: 2, seconds: 10, amp: 0.1 },
+  { kind: 'sag', swings: 1, seconds: 8, amp: 0.15 },
+  { kind: 'jitter', swings: 8, seconds: 3.5, amp: 0.18 },
+  { kind: 'jitter', swings: 14, seconds: 6.5, amp: 0.07 },
+]
+
+/** Отклонение вершины i от значения, от -1 до 1, для фазы phase. */
+export function waveAt(kind: WaveKind, phase: number, i: number): number {
+  const along = phase + (i * Math.PI) / 4
+  switch (kind) {
+    case 'travel':
+      return Math.sin(along)
+    case 'bounce':
+      return Math.abs(Math.sin(along / 2)) * 2 - 1
+    case 'sway':
+      return (Math.sin(along) + 0.6 * Math.sin(phase / 2 + i * 1.3)) / 1.6
+    case 'breath':
+      return Math.sin(phase)
+    case 'sag':
+      return -(1 - Math.cos(phase)) / 2
+    case 'jitter':
+      return (Math.sin(phase + i * 2.4) + 0.5 * Math.sin(phase * 2.3 + i * 1.7)) / 1.5
+  }
+}
+
+/** Волна по вершинам: после роста бежит заданное число раз, амплитуда нарастает и затухает, потом всё замирает.
  *  amp от 0 до 1, phase это фаза в радианах. Пока просят меньше движения, волны нет. */
-export function useSettlingWave(): { amp: number; phase: number } {
+export function useSettlingWave(profile: WaveProfile): { amp: number; phase: number } {
   const [wave, setWave] = useState({ amp: 0, phase: 0 })
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const start = performance.now() + WAVE_WAITS_S * 1000
     let id = 0
     const tick = (now: number) => {
-      const p = (now - start) / (WAVE_LASTS_S * 1000)
+      const p = (now - start) / (profile.seconds * 1000)
       if (p >= 1) return setWave({ amp: 0, phase: 0 })
-      setWave({ amp: p < 0 ? 0 : Math.sin(Math.PI * p), phase: p * WAVE_SWINGS * 2 * Math.PI })
+      setWave({ amp: p < 0 ? 0 : Math.sin(Math.PI * p), phase: p * profile.swings * 2 * Math.PI })
       id = requestAnimationFrame(tick)
     }
     id = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(id)
-  }, [])
+  }, [profile])
   return wave
 }
 

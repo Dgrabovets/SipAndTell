@@ -1554,11 +1554,6 @@ button:focus-visible {
   padding: 6px 14px 16px;
 }
 
-/* Шторка без ползунка: тянуть вниз можно за верхнюю кромку, закрыть крестиком */
-.sheet-grip-area {
-  padding: 20px 0 0;
-}
-
 /* Вкладки чуть выше и ближе к заголовку */
 .sheet-head .sheet-sub {
   margin-bottom: 0;
@@ -1566,4 +1561,31 @@ button:focus-visible {
 
 .tabs {
   margin: 0 0 4px;
+}
+
+/* Ползунок вверху шторки */
+.sheet-grip {
+  width: 40px;
+  height: 4px;
+  margin: 0 auto;
+  border-radius: 2px;
+  background: var(--glass-shine);
+}
+
+/* Полос прокрутки нигде нет, листается жестом */
+html,
+body,
+.sheet-body {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.sheet-body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Месяц и год по центру между стрелками: у заголовка шторки справа отступ под крестик, здесь он не нужен */
+.cal-head .sheet-title {
+  padding: 0;
 }

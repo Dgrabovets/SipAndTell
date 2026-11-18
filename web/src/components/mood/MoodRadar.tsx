@@ -1,26 +1,26 @@
 import { useId } from 'react'
 import { AXES, topMoods, type Mood } from '../../data/moods'
-import { anchorOf, pointsOf, smoothPath, useGrow, useSettlingWave, vertex } from './geometry'
+import { WAVE_BY_MOOD, anchorOf, pointsOf, smoothPath, useGrow, useSettlingWave, vertex, waveAt } from './geometry'
 
 const R = 68
-/** Насколько вершины качаются в разгар волны: доля радиуса. */
-const WAVE = 0.12
-
 /** Радар настроения: плавная капля с градиентом цвета главного настроения. После роста по вершинам
- *  несколько раз пробегает волна и затихает, фигура остаётся ровно на значениях. */
+ *  движение затихает на значениях, а его характер зависит от главного настроения: бодрость бежит волной,
+ *  уют дышит, грусть оседает, раздражение дёргается, тревога дрожит. */
 export function MoodRadar({ mood }: { mood: Mood }) {
   const grow = useGrow()
-  const wave = useSettlingWave()
+  const lead = topMoods(mood)[0]
+  const profile = WAVE_BY_MOOD[lead]
+  const wave = useSettlingWave(profile)
   const gradient = useId()
-  const tips = mood.map((v, i) => vertex(i, R * Math.max(v, 0.04) * grow * (1 + WAVE * wave.amp * Math.sin(wave.phase + (i * Math.PI) / 4))))
-  const lead = AXES[topMoods(mood)[0]].color
+  const tips = mood.map((v, i) => vertex(i, R * Math.max(v, 0.04) * grow * (1 + profile.amp * wave.amp * waveAt(profile.kind, wave.phase, i))))
+  const leadColor = AXES[lead].color
 
   return (
     <svg className="mood-svg" viewBox="-165 -108 330 216" role="img" aria-label="Настроение, радар из восьми осей">
       <defs>
         <radialGradient id={gradient} r="1">
-          <stop offset="0" stopColor={lead} stopOpacity="0.05" />
-          <stop offset="1" stopColor={lead} stopOpacity="0.6" />
+          <stop offset="0" stopColor={leadColor} stopOpacity="0.05" />
+          <stop offset="1" stopColor={leadColor} stopOpacity="0.6" />
         </radialGradient>
       </defs>
       {[1 / 3, 2 / 3, 1].map((k) => (
