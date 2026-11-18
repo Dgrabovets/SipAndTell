@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import type { ReactNode } from 'react'
 import { CUPS } from '../data/cups'
 
 function stats() {
@@ -9,16 +10,21 @@ function stats() {
   return { count: CUPS.length, average: average.toLocaleString('ru-RU', { maximumFractionDigits: 1 }), favourite }
 }
 
-/** Шапка главной: приветствие и сводка недели. */
-export function Header() {
+/** Шапка главной: приветствие, сводка недели и справа место под действие (кнопка календаря). */
+export function Header({ action }: { action?: ReactNode }) {
   const s = stats()
 
   return (
     <>
-      <motion.h1 className="title" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        Привет, чаёвник
-      </motion.h1>
-      <p className="subtitle">Твоя неделя в чае</p>
+      <div className="head-row">
+        <div>
+          <motion.h1 className="title" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+            Привет, чаёвник
+          </motion.h1>
+          <p className="subtitle">Твоя неделя в чае</p>
+        </div>
+        {action}
+      </div>
       <div className="stats">
         {[
           [String(s.count), 'чаепитий'],

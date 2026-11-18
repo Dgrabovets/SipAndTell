@@ -5,7 +5,7 @@ import { CountUp } from './CountUp'
 const RING = 22
 const CIRCUMFERENCE = 2 * Math.PI * RING
 
-/** Цвет кольца по оценке: высокая зелёная, средняя янтарная, низкая красная. */
+/** Цвет по оценке: высокая зелёная, средняя янтарная, низкая красная. */
 function toneOf(value: number): string {
   return value >= 8 ? 'var(--tea-green)' : value >= 6 ? 'var(--primary)' : '#d0685a'
 }
@@ -13,18 +13,18 @@ function toneOf(value: number): string {
 interface Props {
   value: number
   delay?: number
-  /** ring, tone (цвет по оценке) или arc (полукруг). */
-  variant?: string
+  /** Кольцо или полукруг. */
+  shape?: 'ring' | 'arc'
   /** Размер в пикселях, по умолчанию 56. */
   size?: number
 }
 
-/** Оценка из десяти: число внутри кольца или полукруга. */
-export function Score({ value, delay = 0, variant = 'ring', size = 56 }: Props) {
+/** Оценка из десяти: число внутри кольца или полукруга, цвет зависит от оценки. */
+export function Score({ value, delay = 0, shape = 'ring', size = 56 }: Props) {
   const label = `Оценка ${value} из 10`
-  const style = { '--size': `${size}px`, '--ring-color': variant === 'tone' ? toneOf(value) : 'var(--primary)' } as CSSProperties
+  const style = { '--size': `${size}px`, '--ring-color': toneOf(value) } as CSSProperties
 
-  if (variant === 'arc') {
+  if (shape === 'arc') {
     return (
       <span className="score-ring score-arc" style={style} role="img" aria-label={label}>
         <svg viewBox="-28 -20 56 40" aria-hidden>

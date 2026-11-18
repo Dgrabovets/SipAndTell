@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import type { Cup, Daytime, Place } from '../data/cups'
-import { useVariants } from '../variants/useVariants'
 import { Actions } from './Actions'
 import { Friends } from './Friends'
 import { Icon } from './Icon'
@@ -13,7 +12,6 @@ const REVIEW_PREVIEW = 90
 
 /** Детали чаепития: настроение радаром, обстоятельства значками, короткий отзыв, друзья, действия. */
 export function CupDetails({ cup }: { cup: Cup }) {
-  const { variants } = useVariants()
   const [full, setFull] = useState(false)
   const long = cup.review.length > REVIEW_PREVIEW
   const circumstances = [
@@ -34,7 +32,7 @@ export function CupDetails({ cup }: { cup: Cup }) {
         ))}
       </ul>
 
-      <blockquote className={`review rv-${variants.review}`}>
+      <blockquote className="review">
         <p className={full ? '' : 'clamp'}>{cup.review}</p>
         {long && (
           <button className={full ? 'more-chip open' : 'more-chip'} aria-expanded={full} onClick={() => setFull(!full)}>
