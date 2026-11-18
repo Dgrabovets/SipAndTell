@@ -1,0 +1,365 @@
+/* Токены в три слоя: примитивы, семантика, компоненты. Стиль Soft UI Evolution, тёплая палитра. */
+:root {
+  /* Примитивы */
+  --sand-50: #fbf7f0;
+  --sand-100: #f3ece1;
+  --sand-300: #e2d6c4;
+  --brown-900: #2b2118;
+  --brown-500: #7a6a5c;
+  --amber-700: #92400e;
+  --amber-400: #e58a4a;
+  --white: #ffffff;
+
+  /* Чай по типам: цвет всегда идёт с подписью, не вместо неё */
+  --tea-oolong: #c8863a;
+  --tea-green: #6f9b5a;
+  --tea-puer: #7b4a35;
+  --tea-black: #a8483a;
+  --tea-white: #b9b19a;
+
+  /* Семантика: светлая тема */
+  --bg: var(--sand-50);
+  --surface: var(--white);
+  --surface-2: var(--sand-100);
+  --line: var(--sand-300);
+  --text: var(--brown-900);
+  --hint: var(--brown-500);
+  --primary: var(--amber-700);
+  --on-primary: var(--white);
+  --shadow: 0 1px 2px rgb(43 33 24 / 0.06), 0 6px 18px rgb(43 33 24 / 0.07);
+
+  /* Размеры и отступы */
+  --radius: 18px;
+  --radius-sm: 12px;
+  --gap: 12px;
+  --tap: 48px;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #1a1410;
+    --surface: #251d17;
+    --surface-2: #30261e;
+    --line: #3b3027;
+    --text: #f3ebe2;
+    --hint: #a8978a;
+    --primary: var(--amber-400);
+    --on-primary: #1a1410;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 6px 18px rgb(0 0 0 / 0.25);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html,
+body,
+#root {
+  min-height: 100dvh;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.app {
+  position: relative;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 20px 16px calc(96px + env(safe-area-inset-bottom));
+}
+
+.app-dev {
+  padding-top: 64px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  color: var(--hint);
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.day-label {
+  margin: 22px 4px 8px;
+  color: var(--hint);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  list-style: none;
+  padding: 0;
+}
+
+.cup {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.cup-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 68px;
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.cup-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.cup-name {
+  font-weight: 650;
+}
+
+.tea-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--hint);
+  font-size: 14px;
+}
+
+.tea-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--dot, var(--hint));
+}
+
+.score {
+  min-width: 48px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 18px;
+  font-weight: 750;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.score small {
+  color: var(--hint);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cup-more {
+  padding: 0 16px 16px;
+  font-size: 15px;
+}
+
+.cup-more dt {
+  margin-top: 10px;
+  color: var(--hint);
+  font-size: 13px;
+}
+
+.cup-more dd {
+  margin: 0;
+}
+
+.main-btn {
+  position: fixed;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  translate: -50% 0;
+  width: min(448px, calc(100% - 32px));
+  min-height: 54px;
+  border-radius: 16px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 17px;
+  font-weight: 650;
+  box-shadow: var(--shadow);
+}
+
+.skeleton {
+  height: 68px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.empty {
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--hint);
+}
+
+.empty b {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.45);
+}
+
+.sheet {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  translate: -50% 0;
+  width: min(480px, 100%);
+  padding: 22px 16px calc(24px + env(safe-area-inset-bottom));
+  border-radius: 22px 22px 0 0;
+  background: var(--surface);
+}
+
+.sheet h2 {
+  font-size: 19px;
+}
+
+.sheet p {
+  margin: 8px 0 16px;
+  color: var(--hint);
+}
+
+.text-btn {
+  min-height: var(--tap);
+  padding: 0 8px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* Только для выбора варианта в разработке */
+.dev-switch {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  z-index: 10;
+}
+
+.dev-switch button {
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 9px;
+  font-weight: 650;
+}
+
+.dev-switch button[aria-pressed='true'] {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+/* Вариант B: крупные карточки */
+.hero-cup {
+  position: relative;
+  padding: 18px 18px 16px;
+  border-radius: var(--radius);
+  background: linear-gradient(150deg, var(--dot) -40%, var(--surface) 70%);
+  box-shadow: var(--shadow);
+  text-align: left;
+  width: 100%;
+}
+
+.hero-score {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-name {
+  margin: 28px 70px 0 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 13px;
+}
+
+/* Вариант C: сводка */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  margin: 16px 0 4px;
+}
+
+.stat {
+  padding: 14px 10px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.stat b {
+  display: block;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat span {
+  color: var(--hint);
+  font-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
