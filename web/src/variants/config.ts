@@ -5,9 +5,10 @@ export interface VariantGroup {
 }
 
 /** Варианты элементов, по которым ещё нет решения. Первый вариант в группе берётся по умолчанию.
- *  Когда все решено, список пуст и панель «Вид» не показывается. */
+ *  Когда все решено, список пуст и панель «Вид» не показывается. Выбор виден в CSS как html[data-<key>='<id>']. */
 export const VARIANT_GROUPS: readonly VariantGroup[] = [
-  { key: 'radar', title: 'Радар настроения: движение', options: [{ id: 'soft', label: 'Мягко, прежние характеры' }, { id: 'kinds', label: 'У каждого настроения свой рисунок' }, { id: 'glow', label: 'Форма стоит, пульсирует свечение' }] },
+  { key: 'effect', title: 'Эффект чая: где показывать и сравнивать', options: [{ id: 'dots', label: 'Шкалы с точками людей в «Моё чаепитие»' }, { id: 'radar', label: 'Вкладка «Эффект» с радаром' }, { id: 'versus', label: 'Сравнение с другим чаем в «Моё чаепитие»' }] },
+  { key: 'font', title: 'Шрифт подписей в навигации и сводке', options: [{ id: 'jost', label: 'Jost, как сейчас' }, { id: 'caps', label: 'Jost капслоком с разрядкой' }, { id: 'manrope', label: 'Manrope' }, { id: 'onest', label: 'Onest' }, { id: 'nunito', label: 'Nunito, округлый' }] },
 ]
 
 export type VariantKey = string

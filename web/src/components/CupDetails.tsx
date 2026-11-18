@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import type { Cup, Daytime, Place } from '../data/cups'
+import { useVariants } from '../variants/useVariants'
 import { AboutTea } from './AboutTea'
 import { Actions } from './Actions'
+import { EffectDots, EffectRadar, EffectVersus } from './Effects'
 import { Friends } from './Friends'
 import { Icon } from './Icon'
 import { MoodBlock } from './mood/MoodBlock'
@@ -14,13 +16,13 @@ const TIME: Record<Daytime, string> = { morning: 'Утро', day: 'День', ev
 const REVIEW_PREVIEW = 90
 const SWIPE_PX = 60
 
-const TABS = [
-  { label: 'Моё чаепитие', icon: 'book' },
-  { label: 'О чае', icon: 'spark' },
-]
+const MINE = { id: 'mine', label: 'Моё чаепитие', icon: 'book' }
+const EFFECT = { id: 'effect', label: 'Эффект', icon: 'pulse' }
+const ABOUT = { id: 'about', label: 'О чае', icon: 'spark' }
 
 /** Первая вкладка: настроение радаром, обстоятельства значками, короткий отзыв, друзья, действия. */
 function MyCup({ cup }: { cup: Cup }) {
+  const { variants } = useVariants()
   const [full, setFull] = useState(false)
   const long = cup.review.length > REVIEW_PREVIEW
   const circumstances = [
@@ -52,17 +54,19 @@ function MyCup({ cup }: { cup: Cup }) {
       </blockquote>
 
       <Friends cup={cup} />
+      {variants.effect === 'dots' && <EffectDots cup={cup} />}
+      {variants.effect === 'versus' && <EffectVersus cup={cup} />}
       <Actions />
     </div>
   )
 }
 
 /** Переключатель вкладок: текст с подчёркиванием цвета чая, которое переезжает между ними. */
-function TabBar({ tab, onTab }: { tab: number; onTab: (i: number) => void }) {
+function TabBar({ tabs, tab, onTab }: { tabs: (typeof MINE)[]; tab: number; onTab: (i: number) => void }) {
   return (
     <div className="tabs" role="tablist">
-      {TABS.map((t, i) => (
-        <button key={t.label} role="tab" aria-selected={tab === i} onClick={() => onTab(i)}>
+      {tabs.map((t, i) => (
+        <button key={t.id} role="tab" aria-selected={tab === i} onClick={() => onTab(i)}>
           {tab === i && <motion.span className="tab-mark" layoutId="tab-mark" transition={{ type: 'spring', stiffness: 460, damping: 34 }} />}
           <Icon name={t.icon} />
           {t.label}
@@ -72,19 +76,22 @@ function TabBar({ tab, onTab }: { tab: number; onTab: (i: number) => void }) {
   )
 }
 
-/** Детали чаепития в двух вкладках: «Моё чаепитие» и «О чае» (справка от ИИ). Содержимое сдвигается по направлению
- *  вкладки, высота меняется плавно, вкладки листаются тапом и свайпом вбок. */
+/** Детали чаепития во вкладках: «Моё чаепитие», «О чае» (справка от ИИ) и, в одном из вариантов, «Эффект».
+ *  Содержимое сдвигается по направлению вкладки, высота меняется плавно, вкладки листаются тапом и свайпом вбок. */
 export function CupDetails({ cup }: { cup: Cup }) {
-  const [[tab, dir], setTab] = useState([0, 1])
+  const { variants } = useVariants()
+  const tabs = variants.effect === 'radar' ? [MINE, EFFECT, ABOUT] : [MINE, ABOUT]
+  const [[picked, dir], setTab] = useState([0, 1])
+  const tab = Math.min(picked, tabs.length - 1)
   const go = (next: number) => next !== tab && setTab([next, next > tab ? 1 : -1])
 
   return (
     <>
-      <TabBar tab={tab} onTab={go} />
+      <TabBar tabs={tabs} tab={tab} onTab={go} />
       <Smooth>
         <AnimatePresence mode="wait" initial={false} custom={dir}>
           <motion.div
-            key={`${cup.id}-${tab}`}
+            key={`${cup.id}-${tabs[tab].id}`}
             custom={dir}
             variants={{
               enter: (d: number) => ({ x: d * 36, opacity: 0 }),
@@ -99,11 +106,13 @@ export function CupDetails({ cup }: { cup: Cup }) {
             dragSnapToOrigin
             dragElastic={0.18}
             onDragEnd={(_, info) => {
-              if (info.offset.x < -SWIPE_PX) go(1)
-              if (info.offset.x > SWIPE_PX) go(0)
+              if (info.offset.x < -SWIPE_PX) go(Math.min(tab + 1, tabs.length - 1))
+              if (info.offset.x > SWIPE_PX) go(Math.max(tab - 1, 0))
             }}
           >
-            {tab === 0 ? <MyCup cup={cup} /> : <AboutTea cup={cup} />}
+            {tabs[tab].id === 'mine' && <MyCup cup={cup} />}
+            {tabs[tab].id === 'effect' && <EffectRadar cup={cup} />}
+            {tabs[tab].id === 'about' && <AboutTea cup={cup} />}
           </motion.div>
         </AnimatePresence>
       </Smooth>

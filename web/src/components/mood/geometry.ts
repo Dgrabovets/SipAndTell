@@ -42,40 +42,19 @@ export interface WaveProfile {
   amp: number
 }
 
-/** Наборы характеров движения, порядок как в AXES. Всё затухает и замирает на значениях, вершины не выходят за радар.
- *  soft: мягкая версия прежних, kinds: у каждого настроения свой рисунок, glow: фигура стоит, пульсирует свечение. */
-export const WAVE_SETS: Record<string, WaveProfile[]> = {
-  soft: [
-    { kind: 'travel', swings: 5, seconds: 4.5, amp: 0.065 },
-    { kind: 'bounce', swings: 4, seconds: 5, amp: 0.055 },
-    { kind: 'sway', swings: 3, seconds: 7, amp: 0.05 },
-    { kind: 'breath', swings: 2.5, seconds: 9, amp: 0.03 },
-    { kind: 'sag', swings: 2, seconds: 10, amp: 0.04 },
-    { kind: 'sag', swings: 1, seconds: 8, amp: 0.06 },
-    { kind: 'jitter', swings: 8, seconds: 3.5, amp: 0.07 },
-    { kind: 'jitter', swings: 14, seconds: 6.5, amp: 0.03 },
-  ],
-  kinds: [
-    { kind: 'pulse', swings: 3, seconds: 3.5, amp: 0.09 },
-    { kind: 'bounce', swings: 4, seconds: 5, amp: 0.07 },
-    { kind: 'turn', swings: 2, seconds: 7, amp: 0.2 },
-    { kind: 'breath', swings: 2.5, seconds: 9, amp: 0.04 },
-    { kind: 'droop', swings: 1.5, seconds: 9, amp: 0.1 },
-    { kind: 'sag', swings: 1, seconds: 8, amp: 0.08 },
-    { kind: 'jitter', swings: 8, seconds: 3.5, amp: 0.06 },
-    { kind: 'jitter', swings: 14, seconds: 6.5, amp: 0.025 },
-  ],
-  glow: [
-    { kind: 'breath', swings: 6, seconds: 4, amp: 0 },
-    { kind: 'breath', swings: 5, seconds: 5, amp: 0 },
-    { kind: 'breath', swings: 3, seconds: 7, amp: 0 },
-    { kind: 'breath', swings: 2.5, seconds: 9, amp: 0 },
-    { kind: 'breath', swings: 2, seconds: 10, amp: 0 },
-    { kind: 'breath', swings: 1, seconds: 8, amp: 0 },
-    { kind: 'breath', swings: 9, seconds: 3.5, amp: 0 },
-    { kind: 'breath', swings: 14, seconds: 6.5, amp: 0 },
-  ],
-}
+/** Характер движения для каждого настроения, порядок как в AXES. Всё затухает и замирает на значениях,
+ *  вершины не выходят за радар: бодрость один вдох наружу, радость прыжки, любопытство поворот, уют дыхание,
+ *  усталость провисание сверху, грусть оседание, раздражение дёрганье, тревога мелкая дрожь. */
+export const WAVE_BY_MOOD: WaveProfile[] = [
+  { kind: 'pulse', swings: 3, seconds: 3.5, amp: 0.09 },
+  { kind: 'bounce', swings: 4, seconds: 5, amp: 0.07 },
+  { kind: 'turn', swings: 2, seconds: 7, amp: 0.2 },
+  { kind: 'breath', swings: 2.5, seconds: 9, amp: 0.04 },
+  { kind: 'droop', swings: 1.5, seconds: 9, amp: 0.1 },
+  { kind: 'sag', swings: 1, seconds: 8, amp: 0.08 },
+  { kind: 'jitter', swings: 8, seconds: 3.5, amp: 0.06 },
+  { kind: 'jitter', swings: 14, seconds: 6.5, amp: 0.025 },
+]
 
 /** Отклонение вершины i от значения, от -1 до 1, для фазы phase. */
 export function waveAt(kind: WaveKind, phase: number, i: number): number {

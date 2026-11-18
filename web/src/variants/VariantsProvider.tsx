@@ -27,6 +27,11 @@ export function VariantsProvider({ children }: { children: ReactNode }) {
     }
   }, [variants])
 
+  // Выбор виден CSS: html[data-label-font='manrope'] и так далее.
+  useEffect(() => {
+    for (const [key, id] of Object.entries(variants)) document.documentElement.dataset[key] = id
+  }, [variants])
+
   const value = useMemo(() => ({ variants, set: (key: VariantKey, id: string) => setVariants((v) => ({ ...v, [key]: id })) }), [variants])
   return <VariantsContext.Provider value={value}>{children}</VariantsContext.Provider>
 }
