@@ -1,5 +1,5 @@
 import { animate } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AXES } from '../../data/moods'
 
 /** Точка на окружности: вершина i, нулевая сверху, дальше по часовой. Число вершин берётся из AXES. */
@@ -113,4 +113,28 @@ export function smoothPath(p: [number, number][]): string {
     d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`
   }
   return d + 'Z'
+}
+
+/** Плавный переход чисел к новым значениям: при смене target они не прыгают, а перетекают за 0.8 секунды. */
+export function useMorph(target: number[]): number[] {
+  const [current, setCurrent] = useState(target)
+  const latest = useRef(target)
+  const key = target.join(',')
+
+  useEffect(() => {
+    const from = latest.current
+    const to = key.split(',').map(Number)
+    const controls = animate(0, 1, {
+      duration: 0.8,
+      ease: [0.2, 0.8, 0.2, 1],
+      onUpdate: (p) => {
+        const next = to.map((v, i) => (from[i] ?? 0) + (v - (from[i] ?? 0)) * p)
+        latest.current = next
+        setCurrent(next)
+      },
+    })
+    return () => controls.stop()
+  }, [key])
+
+  return current
 }

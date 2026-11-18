@@ -7,8 +7,8 @@ export interface VariantGroup {
 /** Варианты элементов, по которым ещё нет решения. Первый вариант в группе берётся по умолчанию.
  *  Когда все решено, список пуст и панель «Вид» не показывается. Выбор виден в CSS как html[data-<key>='<id>']. */
 export const VARIANT_GROUPS: readonly VariantGroup[] = [
-  { key: 'effect', title: 'Эффект чая: где показывать и сравнивать', options: [{ id: 'dots', label: 'Шкалы с точками людей в «Моё чаепитие»' }, { id: 'radar', label: 'Вкладка «Эффект» с радаром' }, { id: 'versus', label: 'Сравнение с другим чаем в «Моё чаепитие»' }] },
-  { key: 'font', title: 'Шрифт подписей в навигации и сводке', options: [{ id: 'jost', label: 'Jost, как сейчас' }, { id: 'caps', label: 'Jost капслоком с разрядкой' }, { id: 'manrope', label: 'Manrope' }, { id: 'onest', label: 'Onest' }, { id: 'nunito', label: 'Nunito, округлый' }] },
+  { key: 'effectView', title: 'Вкладка «Эффект»: как рисуем и анимируем', options: [{ id: 'grow', label: 'Радар вырастает из центра' }, { id: 'morph', label: 'Радар перетекает между режимами' }, { id: 'bars', label: 'Полоски с пружиной' }, { id: 'bubbles', label: 'Пузыри, которые надуваются' }] },
+  { key: 'words', title: 'Вкладка «Эффект»: как называем эффекты', options: [{ id: 'verbs', label: 'Что делает чай: бодрит, успокаивает' }, { id: 'feelings', label: 'Ощущение: бодрость, спокойствие' }, { id: 'past', label: 'Как в дневнике: взбодрил, успокоил' }] },
 ]
 
 export type VariantKey = string

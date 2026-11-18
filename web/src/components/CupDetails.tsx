@@ -1,10 +1,9 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import type { Cup, Daytime, Place } from '../data/cups'
-import { useVariants } from '../variants/useVariants'
 import { AboutTea } from './AboutTea'
 import { Actions } from './Actions'
-import { EffectDots, EffectRadar, EffectVersus } from './Effects'
+import { EffectTab } from './Effects'
 import { Friends } from './Friends'
 import { Icon } from './Icon'
 import { MoodBlock } from './mood/MoodBlock'
@@ -22,7 +21,6 @@ const ABOUT = { id: 'about', label: 'О чае', icon: 'spark' }
 
 /** Первая вкладка: настроение радаром, обстоятельства значками, короткий отзыв, друзья, действия. */
 function MyCup({ cup }: { cup: Cup }) {
-  const { variants } = useVariants()
   const [full, setFull] = useState(false)
   const long = cup.review.length > REVIEW_PREVIEW
   const circumstances = [
@@ -54,8 +52,6 @@ function MyCup({ cup }: { cup: Cup }) {
       </blockquote>
 
       <Friends cup={cup} />
-      {variants.effect === 'dots' && <EffectDots cup={cup} />}
-      {variants.effect === 'versus' && <EffectVersus cup={cup} />}
       <Actions />
     </div>
   )
@@ -76,11 +72,10 @@ function TabBar({ tabs, tab, onTab }: { tabs: (typeof MINE)[]; tab: number; onTa
   )
 }
 
-/** Детали чаепития во вкладках: «Моё чаепитие», «О чае» (справка от ИИ) и, в одном из вариантов, «Эффект».
+/** Детали чаепития во вкладках: «Моё чаепитие», «Эффект» и «О чае» (справка от ИИ).
  *  Содержимое сдвигается по направлению вкладки, высота меняется плавно, вкладки листаются тапом и свайпом вбок. */
 export function CupDetails({ cup }: { cup: Cup }) {
-  const { variants } = useVariants()
-  const tabs = variants.effect === 'radar' ? [MINE, EFFECT, ABOUT] : [MINE, ABOUT]
+  const tabs = [MINE, EFFECT, ABOUT]
   const [[picked, dir], setTab] = useState([0, 1])
   const tab = Math.min(picked, tabs.length - 1)
   const go = (next: number) => next !== tab && setTab([next, next > tab ? 1 : -1])
@@ -111,7 +106,7 @@ export function CupDetails({ cup }: { cup: Cup }) {
             }}
           >
             {tabs[tab].id === 'mine' && <MyCup cup={cup} />}
-            {tabs[tab].id === 'effect' && <EffectRadar cup={cup} />}
+            {tabs[tab].id === 'effect' && <EffectTab cup={cup} />}
             {tabs[tab].id === 'about' && <AboutTea cup={cup} />}
           </motion.div>
         </AnimatePresence>
