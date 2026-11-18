@@ -1,7 +1,6 @@
 import { motion } from 'motion/react'
 import { useState, type CSSProperties } from 'react'
 import { CUPS, EFFECTS_COUNT, type Cup } from '../data/cups'
-import { useVariants } from '../variants/useVariants'
 
 /** Названия семи осей, порядок как в данных чашки. Как в дневнике, прошедшим временем от первого лица. */
 const LABELS = ['Взбодрил', 'Успокоил', 'Согрел', 'Собрал мысли', 'Разморило', 'Поднял настроение', 'Взвинтил']
@@ -20,12 +19,9 @@ const MODES: { id: Mode; label: string }[] = [
   { id: 'versus', label: 'С другим чаем' },
 ]
 
-/** Пары цветов для режима «Ты и друзья». Первый цвет твой, второй средний по друзьям. */
-const PAIRS: Record<string, [string, string]> = {
-  amberLilac: ['#f2a33a', '#b78cf5'],
-  coralTeal: ['#ff7a6b', '#4fd1c5'],
-  goldPink: ['#f5c542', '#f06fa8'],
-}
+/** Цвета режима «Ты и друзья»: твой янтарный, средний по друзьям сиреневый. */
+const YOU_BAR = '#f2a33a'
+const FRIENDS_BAR = '#b78cf5'
 
 /** Яркие цвета типов чая для графика: на тёмном фоне они должны различаться с первого взгляда. */
 const TEA_CHART: Record<string, string> = {
@@ -68,23 +64,21 @@ function Bars({ series }: { series: Series[] }) {
 }
 
 /** Вкладка «Эффект». Два режима: твоя оценка рядом со средней по друзьям и сравнение твоей оценки с другим чаем.
- *  Пара цветов для «Ты и друзья» выбирается в панели «Вид». */
+ *   */
 export function EffectTab({ cup }: { cup: Cup }) {
-  const { variants } = useVariants()
   const [mode, setMode] = useState<Mode>('both')
   const others = CUPS.filter((c) => c.id !== cup.id)
   const [pickedId, setPickedId] = useState<number | null>(null)
   const other = others.find((c) => c.id === pickedId) ?? others[0]
   const friendNames = Object.keys(cup.effects).filter((n) => n !== 'Ты')
   const mine = cup.effects['Ты']
-  const pair = PAIRS[variants.effectPair]
   const sameTea = cup.type === other.type
 
   const series: Series[] =
     mode === 'both'
       ? [
-          { name: 'Ты', color: pair[0], values: mine },
-          { name: 'Друзья', color: pair[1], values: averageOf(friendNames.map((n) => cup.effects[n])) },
+          { name: 'Ты', color: YOU_BAR, values: mine },
+          { name: 'Друзья', color: FRIENDS_BAR, values: averageOf(friendNames.map((n) => cup.effects[n])) },
         ]
       : [
           { name: cup.name, color: TEA_CHART[cup.type], values: mine },
