@@ -4,26 +4,26 @@ import { DrinkButton } from './components/DrinkButton'
 import { DrinkSheet } from './components/DrinkSheet'
 import { HomeB } from './screens/HomeB'
 
-const PALETTES = { house: 'Дом', matcha: 'Матча', hibiscus: 'Гибискус', dusk: 'Сумерки' }
-type Palette = keyof typeof PALETTES
+const GLASS = { off: 'Без', matte: 'Матовое', liquid: 'Жидкое', floating: 'Плавающее' }
+type Glass = keyof typeof GLASS
 
 export default function App() {
   const [sheet, setSheet] = useState(false)
-  const [palette, setPalette] = useState<Palette>('house')
+  const [glass, setGlass] = useState<Glass>('liquid')
   const [dark, setDark] = useState(() => matchMedia('(prefers-color-scheme: dark)').matches)
 
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? 'dark' : 'light'
-    document.documentElement.dataset.palette = palette
-  }, [dark, palette])
+    document.documentElement.dataset.glass = glass
+  }, [dark, glass])
 
   return (
     <MotionConfig reducedMotion="user">
       {import.meta.env.DEV && (
-        <div className="dev-switch" role="group" aria-label="Палитра">
-          {(Object.keys(PALETTES) as Palette[]).map((p) => (
-            <button key={p} aria-pressed={palette === p} onClick={() => setPalette(p)}>
-              {PALETTES[p]}
+        <div className="dev-switch" role="group" aria-label="Стекло">
+          {(Object.keys(GLASS) as Glass[]).map((g) => (
+            <button key={g} aria-pressed={glass === g} onClick={() => setGlass(g)}>
+              {GLASS[g]}
             </button>
           ))}
           <button onClick={() => setDark(!dark)}>{dark ? 'Светлая' : 'Тёмная'}</button>

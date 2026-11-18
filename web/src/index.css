@@ -50,32 +50,6 @@
   --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 6px 18px rgb(0 0 0 / 0.25);
 }
 
-/* Палитры на выбор (пока идёт обсуждение). «Чайный дом» это значения выше. */
-:root[data-palette='matcha'] {
-  --bg: #f4f7ef; --surface: #ffffff; --surface-2: #e7eedd; --line: #d3dfc3;
-  --text: #1f2a1c; --hint: #5f6f58; --primary: #3f6b3a; --on-primary: #ffffff;
-}
-:root[data-palette='matcha'][data-theme='dark'] {
-  --bg: #111a12; --surface: #1a251b; --surface-2: #243225; --line: #2f4031;
-  --text: #e8f1e3; --hint: #94a88f; --primary: #8cc27f; --on-primary: #10190f;
-}
-:root[data-palette='hibiscus'] {
-  --bg: #fdf6f5; --surface: #ffffff; --surface-2: #f8e6e4; --line: #efd2cf;
-  --text: #2d1618; --hint: #7d5a5c; --primary: #a63d56; --on-primary: #ffffff;
-}
-:root[data-palette='hibiscus'][data-theme='dark'] {
-  --bg: #1b1114; --surface: #27191d; --surface-2: #34222a; --line: #442c35;
-  --text: #f6e9ea; --hint: #b49a9e; --primary: #ee8aa0; --on-primary: #1b1114;
-}
-:root[data-palette='dusk'] {
-  --bg: #f6f4fb; --surface: #ffffff; --surface-2: #e9e5f5; --line: #d9d2ec;
-  --text: #1d1830; --hint: #6a6286; --primary: #5b43b5; --on-primary: #ffffff;
-}
-:root[data-palette='dusk'][data-theme='dark'] {
-  --bg: #14121f; --surface: #1e1b2e; --surface-2: #2a263f; --line: #38334f;
-  --text: #eeeaf8; --hint: #9d96b8; --primary: #f0b36a; --on-primary: #14121f;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -117,7 +91,7 @@ button:focus-visible {
 }
 
 .app-dev {
-  padding-top: 64px;
+  padding-top: 104px;
 }
 
 .title {
@@ -391,5 +365,95 @@ button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   * {
     scroll-behavior: auto !important;
+  }
+}
+
+/* Стекло. Нужен цветной фон под ним, иначе размывать нечего. Варианты выбираются атрибутом data-glass. */
+:root {
+  --glass-bg: rgb(255 255 255 / 0.5);
+  --glass-edge: rgb(255 255 255 / 0.75);
+  --glass-shine: rgb(255 255 255 / 0.55);
+  --blur: 22px;
+}
+
+:root[data-theme='dark'] {
+  --glass-bg: rgb(255 255 255 / 0.07);
+  --glass-edge: rgb(255 255 255 / 0.16);
+  --glass-shine: rgb(255 255 255 / 0.18);
+}
+
+:root:not([data-glass='off'])::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--tea-oolong) 55%, transparent), transparent 42%),
+    radial-gradient(circle at 92% 38%, color-mix(in srgb, var(--tea-green) 45%, transparent), transparent 40%),
+    radial-gradient(circle at 18% 88%, color-mix(in srgb, var(--tea-black) 40%, transparent), transparent 42%);
+}
+
+:root[data-theme='dark']:not([data-glass='off'])::before {
+  opacity: 0.55;
+}
+
+/* Матовое и жидкое: стекло на карточках, кнопке и шторке */
+:root[data-glass='matte'] .hero-cup,
+:root[data-glass='liquid'] .hero-cup,
+:root[data-glass='matte'] .stat,
+:root[data-glass='liquid'] .stat {
+  background:
+    linear-gradient(150deg, color-mix(in srgb, var(--dot, transparent) 32%, transparent), transparent 70%),
+    var(--glass-bg);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(var(--blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(1.6);
+}
+
+:root[data-glass='liquid'] .hero-cup {
+  border-radius: 26px;
+  box-shadow:
+    inset 0 1px 0 var(--glass-shine),
+    inset 0 -10px 24px -14px var(--glass-shine),
+    var(--shadow);
+}
+
+/* Плавающие элементы стеклянные в трёх вариантах из четырёх */
+:root:not([data-glass='off']) .main-btn {
+  background: color-mix(in srgb, var(--primary) 82%, transparent);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(var(--blur)) saturate(1.6);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(1.6);
+}
+
+:root[data-glass='liquid'] .main-btn {
+  border-radius: 999px;
+  box-shadow:
+    inset 0 1px 0 var(--glass-shine),
+    inset 0 -8px 16px -10px var(--glass-shine),
+    var(--shadow);
+}
+
+:root:not([data-glass='off']) .sheet {
+  background: var(--glass-bg);
+  border-top: 1px solid var(--glass-edge);
+  backdrop-filter: blur(32px) saturate(1.6);
+  -webkit-backdrop-filter: blur(32px) saturate(1.6);
+}
+
+:root:not([data-glass='off']) .dev-switch {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+
+/* Без вариантов у телефонов, где стекло не тянет, и при просьбе меньше эффектов */
+@media (prefers-reduced-transparency: reduce) {
+  :root .hero-cup,
+  :root .stat,
+  :root .main-btn,
+  :root .sheet {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }
