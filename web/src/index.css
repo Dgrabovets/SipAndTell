@@ -1737,10 +1737,10 @@ body::-webkit-scrollbar,
 
 .eff-bar {
   display: grid;
-  grid-template-columns: 150px 1fr 18px;
+  grid-template-columns: 150px 1fr;
   align-items: center;
   gap: 10px;
-  min-height: 34px;
+  min-height: 38px;
   font-size: 14px;
 }
 
@@ -1748,20 +1748,39 @@ body::-webkit-scrollbar,
   color: var(--hint);
 }
 
-.eff-bar > div {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+.effect-tab .eff-bars {
+  margin-top: 8px;
 }
 
-.eff-bar i {
+.eff-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.eff-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 16px;
+}
+
+.eff-track {
+  flex: 1;
+  height: 7px;
+}
+
+.eff-track i {
   display: block;
   height: 7px;
   min-width: 2px;
   border-radius: 4px;
 }
 
-.eff-bar b {
-  text-align: right;
+.eff-line em {
+  width: 14px;
+  font-size: 12px;
+  font-style: normal;
   font-variant-numeric: tabular-nums;
+  text-align: right;
 }
