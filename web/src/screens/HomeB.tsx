@@ -3,7 +3,7 @@ import { useState, type CSSProperties, type PointerEvent } from 'react'
 import { CountUp } from '../components/CountUp'
 import { CupDetails } from '../components/CupDetails'
 import { GlassSheet } from '../components/GlassSheet'
-import type { MoodStyle } from '../components/mood/MoodBlock'
+import type { ActionStyle } from '../components/Actions'
 import { spawnRipple } from '../components/spawnRipple'
 import { CUPS, TEA_COLOR } from '../data/cups'
 import { moodWord } from '../data/moods'
@@ -21,7 +21,7 @@ function resetLight(e: PointerEvent<HTMLElement>) {
 }
 
 /** Главная: крупные стеклянные карточки, детали открываются шторкой. */
-export function HomeB({ moodStyle }: { moodStyle: MoodStyle }) {
+export function HomeB({ actionStyle }: { actionStyle: ActionStyle }) {
   const [openId, setOpenId] = useState<number | null>(null)
   const opened = CUPS.find((c) => c.id === openId)
 
@@ -73,7 +73,7 @@ export function HomeB({ moodStyle }: { moodStyle: MoodStyle }) {
             <p className="sheet-sub">
               {opened.type} · {opened.score} из 10
             </p>
-            <CupDetails cup={opened} moodStyle={moodStyle} />
+            <CupDetails cup={opened} actionStyle={actionStyle} />
           </>
         )}
       </GlassSheet>
