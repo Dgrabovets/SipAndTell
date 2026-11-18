@@ -1,6 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import WebApp from '@twa-dev/sdk'
+import '@fontsource-variable/manrope'
+import '@fontsource-variable/lora'
 import './index.css'
 import App from './App.tsx'
 
