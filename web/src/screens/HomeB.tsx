@@ -1,26 +1,50 @@
 import { motion } from 'motion/react'
+import type { PointerEvent } from 'react'
+import { CountUp } from '../components/CountUp'
 import { CUPS, TEA_COLOR } from '../data/cups'
 
-/** Вариант B: крупные карточки с цветом чая и большой оценкой. */
+/** Блик на стекле идёт за пальцем или курсором. */
+function moveLight(e: PointerEvent<HTMLElement>) {
+  const box = e.currentTarget.getBoundingClientRect()
+  e.currentTarget.style.setProperty('--mx', `${e.clientX - box.left}px`)
+  e.currentTarget.style.setProperty('--my', `${e.clientY - box.top}px`)
+}
+
+function resetLight(e: PointerEvent<HTMLElement>) {
+  e.currentTarget.style.removeProperty('--mx')
+  e.currentTarget.style.removeProperty('--my')
+}
+
+/** Вариант B: крупные стеклянные карточки с цветом чая и большой оценкой. */
 export function HomeB() {
   return (
     <>
-      <h1 className="title">Недавно выпито</h1>
-      <p className="subtitle">Нажми на карточку, чтобы вспомнить отзыв</p>
+      <motion.h1 className="title" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+        Недавно выпито
+      </motion.h1>
+      <motion.p className="subtitle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
+        Нажми на карточку, чтобы вспомнить отзыв
+      </motion.p>
       <ul className="list" style={{ marginTop: 18 }}>
         {CUPS.map((cup, i) => (
           <motion.li
             key={cup.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.06, type: 'spring', stiffness: 300, damping: 28 }}
+            initial={{ opacity: 0, y: 36, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.12 + i * 0.08, type: 'spring', stiffness: 260, damping: 24 }}
           >
             <motion.button
               className="hero-cup"
               style={{ '--dot': TEA_COLOR[cup.type] } as React.CSSProperties}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+              onPointerMove={moveLight}
+              onPointerLeave={resetLight}
             >
-              <span className="hero-score">{cup.score}</span>
+              <span className="hero-score">
+                <CountUp to={cup.score} delay={0.3 + i * 0.08} />
+              </span>
               <span className="hero-name">{cup.name}</span>
               <span className="chips">
                 <span className="chip">{cup.type}</span>

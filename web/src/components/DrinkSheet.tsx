@@ -5,7 +5,7 @@ interface Props {
   onClose: () => void
 }
 
-/** Заглушка формы «Выпил»: сама форма рисуется следующим шагом. */
+/** Заглушка формы «Выпил»: сама форма рисуется следующим шагом. Шторку можно смахнуть вниз. */
 export function DrinkSheet({ open, onClose }: Props) {
   return (
     <AnimatePresence>
@@ -19,8 +19,13 @@ export function DrinkSheet({ open, onClose }: Props) {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', stiffness: 420, damping: 38 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 34 }}
+            drag="y"
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.6 }}
+            onDragEnd={(_, info) => info.offset.y > 120 && onClose()}
           >
+            <div className="sheet-grip" aria-hidden />
             <h2>Что ты пил?</h2>
             <p>Здесь будет форма: чай, оценка, настроение, обстоятельства, отзыв.</p>
             <button className="text-btn" onClick={onClose}>
