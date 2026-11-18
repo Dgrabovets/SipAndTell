@@ -12,11 +12,13 @@ interface Props {
   tint?: string
   /** Украшение поверх фона шторки, под её содержимым (например пар). */
   decor?: ReactNode
+  /** Не обрезать содержимое у краёв: пар может выйти за карточку. */
+  airy?: boolean
 }
 
 /** Стеклянная шторка снизу, выезжает снизу. Закрывается крестиком, смахиванием за «ручку» или тапом по фону.
  *  Рябь от нажатия на карточку перетекает сюда, когда шторка открывается. */
-export function GlassSheet({ open, label, onClose, children, tint, decor }: Props) {
+export function GlassSheet({ open, label, onClose, children, tint, decor, airy }: Props) {
   const controls = useDragControls()
   const sheet = useRef<HTMLDivElement>(null)
 
@@ -31,7 +33,7 @@ export function GlassSheet({ open, label, onClose, children, tint, decor }: Prop
           <motion.div className="sheet-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
           <motion.div
             ref={sheet}
-            className={tint ? 'sheet tinted' : 'sheet'}
+            className={['sheet', tint && 'tinted', airy && 'airy'].filter(Boolean).join(' ')}
             role="dialog"
             aria-label={label}
             style={{ '--dot': tint } as CSSProperties}

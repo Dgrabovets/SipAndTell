@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { useState } from 'react'
-import { CalendarButton, DayStrip, MonthSheet } from '../components/Calendar'
+import { CalendarButton, MonthSheet } from '../components/Calendar'
 import { CupCard } from '../components/CupCard'
 import { CupDetails } from '../components/CupDetails'
 import { GlassSheet } from '../components/GlassSheet'
@@ -11,7 +11,6 @@ import { Score } from '../components/Score'
 import { SwipeRow } from '../components/SwipeRow'
 import { TEA_COLOR, CUPS, type Cup } from '../data/cups'
 import { dayGroup, dayKey, longDay } from '../data/days'
-import { useVariants } from '../variants/useVariants'
 
 const ORDER = new Map(CUPS.map((c, i) => [c.id, i]))
 
@@ -27,7 +26,6 @@ function grouped(cups: Cup[]): [string, Cup[]][] {
 
 /** Главная: навигация, сводка недели, календарь и карточки чаепитий. Детали открываются шторкой. */
 export function Home() {
-  const { variants } = useVariants()
   const [openId, setOpenId] = useState<number | null>(null)
   const [shown, setShown] = useState(false)
   const [day, setDay] = useState<string | null>(null)
@@ -40,8 +38,7 @@ export function Home() {
   return (
     <>
       <Nav />
-      <Header action={variants.calendar === 'month' && <CalendarButton active={!!day} onClick={() => setMonth(true)} />} />
-      {variants.calendar === 'strip' && <DayStrip selected={day} onSelect={setDay} />}
+      <Header action={<CalendarButton active={!!day} onClick={() => setMonth(true)} />} />
       {day && picked && (
         <button className="day-filter" onClick={() => setDay(null)}>
           {longDay(picked)}
@@ -80,7 +77,16 @@ export function Home() {
         </section>
       ))}
 
-      {variants.calendar === 'month' && <MonthSheet open={month} selected={day} onSelect={setDay} onClose={() => setMonth(false)} />}
+      <MonthSheet
+        open={month}
+        selected={day}
+        onSelect={setDay}
+        onClose={() => setMonth(false)}
+        onOpenCup={(id) => {
+          setOpenId(id)
+          setShown(true)
+        }}
+      />
 
       <GlassSheet open={shown && !!opened} label={opened?.name ?? ''} tint={opened && TEA_COLOR[opened.type]} onClose={() => setShown(false)}>
         {opened && (

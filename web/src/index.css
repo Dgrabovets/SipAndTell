@@ -991,7 +991,6 @@ button:focus-visible {
 .sheet-steam {
   position: absolute;
   inset: 0;
-  overflow: hidden;
   pointer-events: none;
 }
 
@@ -1003,20 +1002,24 @@ button:focus-visible {
   background: radial-gradient(circle, rgb(255 255 255 / 0.4), rgb(255 255 255 / 0) 68%);
   filter: blur(10px);
   opacity: 0;
-  animation: sheet-steam 4200ms ease-out infinite;
+  animation: sheet-steam 4200ms ease-out both;
 }
 
 @keyframes sheet-steam {
   0% {
     opacity: 0;
-    transform: translateY(0) scale(0.7);
+    transform: translate(0, 0) scale(0.7);
   }
   25% {
     opacity: 0.9;
   }
+  70% {
+    opacity: 0.55;
+    transform: translate(0, -300px) scale(1.7);
+  }
   100% {
     opacity: 0;
-    transform: translateY(-340px) scale(1.9);
+    transform: translate(var(--dx, 0px), -400px) scale(2.8);
   }
 }
 
@@ -1027,7 +1030,7 @@ button:focus-visible {
 }
 
 /* Кнопка «Выпил»: как видно, что она живая */
-.main-btn[data-fx='pulse']::before {
+.main-btn::before {
   content: '';
   position: absolute;
   inset: -1px;
@@ -1050,15 +1053,6 @@ button:focus-visible {
   }
 }
 
-.main-btn[data-fx='label'] {
-  width: auto;
-  height: 56px;
-  padding: 0 22px 0 16px;
-  border-radius: 999px;
-  font-size: 16px;
-  font-weight: 650;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .main-btn::before {
     animation: none;
@@ -1076,50 +1070,6 @@ button:focus-visible {
 .cal-btn.on {
   color: var(--primary);
   border-color: var(--primary);
-}
-
-/* Календарь: лента дней */
-.strip {
-  display: flex;
-  gap: 8px;
-  margin: 14px -16px 0;
-  padding: 4px 16px 6px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.strip::-webkit-scrollbar {
-  display: none;
-}
-
-.strip-day {
-  display: flex;
-  flex: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  width: 48px;
-  padding: 8px 0 6px;
-  border: 1px solid var(--glass-edge);
-  border-radius: 16px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-filter);
-  -webkit-backdrop-filter: var(--glass-filter);
-}
-
-.strip-day small {
-  color: var(--hint);
-  font-size: 12px;
-}
-
-.strip-day b {
-  font-size: 17px;
-  font-variant-numeric: tabular-nums;
-}
-
-.strip-day[aria-pressed='true'] {
-  border-color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 22%, transparent);
 }
 
 .cal-dots {
@@ -1200,10 +1150,6 @@ button:focus-visible {
   margin: 6px 16px 0;
 }
 
-.scale[data-mode='stagger'] {
-  height: 132px;
-}
-
 .scale-line {
   position: absolute;
   top: 18px;
@@ -1214,19 +1160,11 @@ button:focus-visible {
   background: rgb(255 255 255 / 0.14);
 }
 
-.scale[data-mode='stagger'] .scale-line {
-  top: 54px;
-}
-
 .scale-mark {
   position: absolute;
   top: 12px;
   width: 0;
   height: 16px;
-}
-
-.scale[data-mode='stagger'] .scale-mark {
-  top: 48px;
 }
 
 .scale-mark i,
@@ -1246,69 +1184,6 @@ button:focus-visible {
   line-height: 1;
 }
 
-.scale[data-mode='initials'] .scale-mark {
-  top: 7px;
-}
-
-.scale[data-mode='initials'] .scale-mark i {
-  width: 24px;
-  height: 24px;
-  margin: 0 0 0 -12px;
-}
-
-.scale-mark em {
-  position: absolute;
-  left: 0;
-  translate: -50% 0;
-  color: var(--c);
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 650;
-  white-space: nowrap;
-}
-
-.scale-mark em::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  width: 1px;
-  background: color-mix(in srgb, var(--c) 55%, transparent);
-}
-
-.scale-mark[data-side='up'] em {
-  bottom: 22px;
-}
-
-.scale-mark[data-side='up'][data-tier='1'] em {
-  bottom: 40px;
-}
-
-.scale-mark[data-side='down'] em {
-  top: 22px;
-}
-
-.scale-mark[data-side='down'][data-tier='1'] em {
-  top: 40px;
-}
-
-.scale-mark[data-side='up'] em::after {
-  top: 100%;
-  height: 8px;
-}
-
-.scale-mark[data-side='up'][data-tier='1'] em::after {
-  height: 26px;
-}
-
-.scale-mark[data-side='down'] em::after {
-  bottom: 100%;
-  height: 8px;
-}
-
-.scale-mark[data-side='down'][data-tier='1'] em::after {
-  height: 26px;
-}
-
 .scale-ticks {
   position: absolute;
   right: 0;
@@ -1324,21 +1199,25 @@ button:focus-visible {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px 22px;
-  margin-top: 12px;
+  gap: 6px 16px;
+  margin-top: 8px;
   padding: 0;
   list-style: none;
+  font-size: 13px;
 }
 
 .legend li {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 
 .legend i {
   flex: none;
+  width: 9px;
+  height: 9px;
   margin-left: 0;
+  box-shadow: none;
 }
 
 .legend span {
@@ -1349,4 +1228,63 @@ button:focus-visible {
 
 .legend b {
   font-variant-numeric: tabular-nums;
+}
+
+/* Карточка создания: пар может выйти за её края, обрезка только снизу и со скруглением */
+.sheet.airy {
+  overflow: visible;
+  clip-path: inset(-500px -160px 0 -160px);
+}
+
+/* Календарь: список чашек дня под месяцем */
+.agenda {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--glass-edge);
+}
+
+.agenda h3 {
+  margin-bottom: 8px;
+  color: var(--hint);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sheet .agenda p {
+  margin: 0;
+}
+
+.agenda-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 16px;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--dot) 16%, transparent), transparent 70%);
+  text-align: left;
+  font-weight: 650;
+}
+
+.agenda-row small {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dot) 20%, transparent);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cal-grid[data-style='tint'] .cal-day {
+  min-height: 44px;
+  justify-content: center;
+}
+
+.cal-head .sheet-title {
+  font-size: 20px;
+  white-space: nowrap;
 }
