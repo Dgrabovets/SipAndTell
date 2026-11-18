@@ -1,6 +1,8 @@
 import type { PointerEvent } from 'react'
 
-/** Рябь от касания: два кольца, элемент сам убирается после анимации. */
+const LIFETIME_MS = 2200
+
+/** Рябь от касания: два кольца. Убираем по таймеру: animationend не придёт, если анимацию отключили. */
 export function spawnRipple(e: PointerEvent<HTMLElement>) {
   const card = e.currentTarget
   const box = card.getBoundingClientRect()
@@ -9,7 +11,7 @@ export function spawnRipple(e: PointerEvent<HTMLElement>) {
     ring.className = cls
     ring.style.setProperty('--x', `${e.clientX - box.left}px`)
     ring.style.setProperty('--y', `${e.clientY - box.top}px`)
-    ring.addEventListener('animationend', () => ring.remove(), { once: true })
     card.append(ring)
+    setTimeout(() => ring.remove(), LIFETIME_MS)
   }
 }
