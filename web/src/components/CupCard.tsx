@@ -1,7 +1,6 @@
 import { motion } from 'motion/react'
 import type { CSSProperties, PointerEvent } from 'react'
 import { TEA_COLOR, type Cup } from '../data/cups'
-import { useVariants } from '../variants/useVariants'
 import { Chips } from './Chips'
 import { Score } from './Score'
 import { spawnRipple } from './spawnRipple'
@@ -18,18 +17,11 @@ function resetLight(e: PointerEvent<HTMLElement>) {
   e.currentTarget.style.removeProperty('--my')
 }
 
-/** Карточка чаепития в трёх видах: крупная, строка, плитка. Оценка и чипы тоже выбираются. */
+/** Карточка чаепития строкой: название и чипы слева, оценка кольцом справа. */
 export function CupCard({ cup, index, onOpen }: { cup: Cup; index: number; onOpen: () => void }) {
-  const { variants } = useVariants()
-  const { card, score, chips } = variants
-  const delay = 0.3 + index * 0.08
-
-  const name = <span className="hero-name">{cup.name}</span>
-  const scoreEl = <Score value={cup.score} variant={score} delay={delay} />
-
   return (
     <motion.button
-      className={`hero-cup is-${card}`}
+      className="hero-cup is-row"
       style={{ '--dot': TEA_COLOR[cup.type] } as CSSProperties}
       whileHover={{ y: -3 }}
       whileTap={{ scale: 0.97 }}
@@ -39,21 +31,11 @@ export function CupCard({ cup, index, onOpen }: { cup: Cup; index: number; onOpe
       onPointerLeave={resetLight}
       onClick={onOpen}
     >
-      {card === 'row' ? (
-        <>
-          <span className="cup-main">
-            {name}
-            <Chips cup={cup} variant={chips} />
-          </span>
-          <span className="cup-score">{scoreEl}</span>
-        </>
-      ) : (
-        <>
-          <span className="cup-score">{scoreEl}</span>
-          {name}
-          <Chips cup={cup} variant={chips} />
-        </>
-      )}
+      <span className="cup-main">
+        <span className="hero-name">{cup.name}</span>
+        <Chips cup={cup} />
+      </span>
+      <Score value={cup.score} delay={0.3 + index * 0.08} />
     </motion.button>
   )
 }

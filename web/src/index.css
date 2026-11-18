@@ -109,28 +109,6 @@ button:focus-visible {
   padding: 0;
 }
 
-.main-btn {
-  position: fixed;
-  left: 50%;
-  bottom: max(16px, env(safe-area-inset-bottom));
-  translate: -50% 0;
-  overflow: hidden;
-  width: min(448px, calc(100% - 32px));
-  min-height: 56px;
-  border: 1px solid var(--glass-edge);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--primary) 42%, transparent);
-  color: var(--text);
-  font-size: 17px;
-  font-weight: 650;
-  backdrop-filter: var(--glass-filter);
-  -webkit-backdrop-filter: var(--glass-filter);
-  box-shadow:
-    inset 0 1px 0 var(--glass-shine),
-    inset 0 -10px 18px -12px var(--glass-shine),
-    0 8px 28px rgb(0 0 0 / 0.35);
-}
-
 /* Блик пробегает по кнопке раз в несколько секунд */
 .main-btn::after {
   content: '';
@@ -140,6 +118,7 @@ button:focus-visible {
   translate: -120% 0;
   animation: shine 6s ease-in-out 1.5s infinite;
   pointer-events: none;
+  border-radius: 50%;
 }
 
 @keyframes shine {
@@ -487,25 +466,6 @@ button:focus-visible {
   font-size: 14px;
 }
 
-.circumstances {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  padding: 0;
-  list-style: none;
-}
-
-.circumstances li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border: 1px solid rgb(255 255 255 / 0.1);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.07);
-}
-
 .icon {
   width: 20px;
   height: 20px;
@@ -716,19 +676,6 @@ button:focus-visible {
 }
 
 /* Оценка, три вида */
-.cup-score {
-  position: absolute;
-  top: 14px;
-  right: 18px;
-}
-
-.score-big {
-  font-size: 40px;
-  font-weight: 700;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
 .score-ring {
   position: relative;
   display: inline-grid;
@@ -763,46 +710,7 @@ button:focus-visible {
   transform: rotate(-90deg);
 }
 
-.score-dots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  width: 112px;
-  justify-content: flex-end;
-}
-
-.score-dots i {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.16);
-}
-
-.score-dots i.on {
-  background: var(--primary);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 60%, transparent);
-}
-
 /* Чипы: строка и минимум */
-.chips-text,
-.chips-min {
-  position: relative;
-  display: block;
-  margin-top: 10px;
-  color: var(--hint);
-  font-size: 14px;
-}
-
-.chips-min {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.mood-word {
-  font-weight: 600;
-}
-
 .tea-dot {
   width: 9px;
   height: 9px;
@@ -830,60 +738,6 @@ button:focus-visible {
 .is-row .hero-name {
   margin: 0;
   font-size: 18px;
-}
-
-.is-row .cup-score {
-  position: static;
-}
-
-.is-row .score-big {
-  font-size: 30px;
-}
-
-.is-row .chips,
-.is-row .chips-text,
-.is-row .chips-min {
-  margin-top: 2px;
-}
-
-.list.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.hero-cup.is-tile {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-height: 156px;
-  padding: 14px;
-  border-radius: 22px;
-}
-
-.is-tile .cup-score {
-  top: 10px;
-  right: 12px;
-}
-
-.is-tile .score-big {
-  font-size: 30px;
-}
-
-.is-tile .score-dots {
-  width: 66px;
-}
-
-.is-tile .hero-name {
-  margin: 40px 0 0;
-  font-size: 17px;
-}
-
-.is-tile .chip:nth-child(n + 2) {
-  display: none;
-}
-
-.is-tile .chips {
-  margin-top: 8px;
 }
 
 /* Шапка: сводка и компактная */
@@ -915,23 +769,6 @@ button:focus-visible {
   font-size: 12px;
 }
 
-.head-compact {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-right: 64px;
-}
-
-.title.small {
-  font-size: 22px;
-}
-
-.avatar.big {
-  width: 40px;
-  height: 40px;
-  font-size: 16px;
-}
-
 /* Кнопка «Выпил»: круглая и островок */
 .main-btn {
   display: flex;
@@ -942,29 +779,6 @@ button:focus-visible {
 
 .main-btn .icon {
   color: inherit;
-}
-
-.main-btn.fab {
-  left: auto;
-  right: 20px;
-  translate: none;
-  width: 64px;
-  min-height: 64px;
-  padding: 0;
-  border-radius: 50%;
-}
-
-.main-btn.island {
-  width: auto;
-  padding: 0 30px;
-}
-
-:root[data-nav='bottom'] .main-btn {
-  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 76px);
-}
-
-:root[data-nav='bottom'] .app {
-  padding-bottom: calc(176px + env(safe-area-inset-bottom));
 }
 
 /* Навигация */
@@ -996,7 +810,7 @@ button:focus-visible {
   color: var(--text);
 }
 
-.nav button > :not(.nav-pill) {
+.nav button > :not(.nav-pill):not(.nav-dot) {
   position: relative;
 }
 
@@ -1014,46 +828,7 @@ button:focus-visible {
   color: inherit;
 }
 
-.nav.top {
-  width: calc(100% - 64px);
-  margin: 0 0 16px;
-}
-
-.nav.bottom {
-  position: fixed;
-  left: 50%;
-  bottom: max(12px, env(safe-area-inset-bottom));
-  translate: -50% 0;
-  z-index: 5;
-  width: min(448px, calc(100% - 32px));
-}
-
 /* Друзья: круги и обстоятельства значками */
-.ring-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  justify-content: center;
-  padding: 0;
-  list-style: none;
-}
-
-.ring-friend {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  font-size: 14px;
-}
-
-.ring-avatar {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-}
-
 .circ-row {
   display: flex;
   justify-content: center;
@@ -1153,4 +928,272 @@ button:focus-visible {
 .vp-options button[aria-pressed='true'] {
   background: var(--primary);
   color: var(--on-primary);
+}
+
+/* Кнопка «Выпил»: круглая, справа внизу */
+.main-btn {
+  position: fixed;
+  right: 20px;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 1px solid var(--glass-edge);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--primary) 70%, transparent);
+  color: var(--on-primary);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
+  box-shadow:
+    inset 0 1px 0 var(--glass-shine),
+    inset 0 -10px 18px -12px var(--glass-shine),
+    0 8px 28px rgb(0 0 0 / 0.35);
+}
+
+.main-btn .icon {
+  width: 28px;
+  height: 28px;
+}
+
+/* Свечение: кольцо расходится от кнопки, в покое кнопка мягко дышит */
+.main-btn.glow {
+  animation: breathe-glow 3.4s ease-in-out infinite;
+}
+
+@keyframes breathe-glow {
+  50% {
+    box-shadow:
+      inset 0 1px 0 var(--glass-shine),
+      0 0 26px color-mix(in srgb, var(--primary) 70%, transparent);
+  }
+}
+
+.halo {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  animation: halo 1.1s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes halo {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+/* Рябь от кнопки по всему экрану */
+.screen-ripple {
+  position: fixed;
+  left: var(--x);
+  top: var(--y);
+  z-index: 40;
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 52%, rgb(255 255 255 / 0.18) 61%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  animation: screen-ripple 3000ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.screen-ripple.second {
+  animation-delay: 450ms;
+}
+
+@keyframes screen-ripple {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(22);
+  }
+}
+
+/* Пар от кнопки: мягкие клубы поднимаются и растворяются */
+.steam {
+  position: fixed;
+  left: calc(var(--x) + var(--dx, 0px));
+  top: var(--y);
+  z-index: 40;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 255 255 / 0.5), rgb(255 255 255 / 0) 70%);
+  filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  animation: steam 2400ms ease-out both;
+}
+
+@keyframes steam {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.6);
+  }
+  20% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(var(--dx, 0px) * 1.6), -190px) scale(2.6);
+  }
+}
+
+/* Чипы с лёгким цветом */
+.chip.tinted {
+  border-color: color-mix(in srgb, var(--tint) 35%, transparent);
+  background: color-mix(in srgb, var(--tint) 16%, transparent);
+}
+
+.chip.tinted.mood {
+  color: var(--tint);
+  font-weight: 600;
+}
+
+.is-row .chips {
+  margin-top: 2px;
+}
+
+/* Навигация сверху */
+.nav.top {
+  width: calc(100% - 64px);
+  margin: 0 0 16px;
+}
+
+.nav-icon {
+  display: inline-grid;
+}
+
+.nav-dot {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+}
+
+.nav.dot button[aria-current='page'] {
+  color: var(--primary);
+}
+
+/* Друзья: ячейки и шкала */
+.cells {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+}
+
+.cells i {
+  height: 12px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.1);
+}
+
+.cells i.on {
+  background: var(--primary);
+}
+
+.cells i.on.alt {
+  background: var(--tea-green);
+}
+
+.track {
+  position: relative;
+  height: 92px;
+  margin: 8px 14px 0;
+}
+
+.track-line,
+.track-diff {
+  position: absolute;
+  top: 44px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.track-line {
+  right: 0;
+  left: 0;
+  background: rgb(255 255 255 / 0.12);
+}
+
+.track-diff {
+  background: linear-gradient(90deg, var(--primary), var(--tea-green));
+}
+
+.track-mark {
+  position: absolute;
+  top: 36px;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+}
+
+.track-mark i {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 70%, transparent);
+}
+
+.track-mark.friends i {
+  background: var(--tea-green);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--tea-green) 70%, transparent);
+}
+
+.track-mark em {
+  position: absolute;
+  left: 50%;
+  translate: -50% 0;
+  font-size: 13px;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.track-mark.you em {
+  bottom: 28px;
+}
+
+.track-mark.friends em {
+  top: 28px;
+}
+
+.track-ticks {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  color: var(--hint);
+  font-size: 12px;
+}
+
+.sheet-sub {
+  margin: 2px 0 8px;
+}
+
+.is-row .chip {
+  padding: 3px 9px;
+  font-size: 12.5px;
 }

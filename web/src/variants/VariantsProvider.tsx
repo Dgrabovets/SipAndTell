@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import { DEFAULT_VARIANTS, type VariantKey, type Variants } from './config'
+import { DEFAULT_VARIANTS, VARIANT_GROUPS, type VariantKey, type Variants } from './config'
 import { VariantsContext } from './context'
 
-const STORAGE_KEY = 'sipandtell.variants'
+const STORAGE_KEY = 'sipandtell.variants.v2'
 
+/** Берём из хранилища только то, что ещё есть в конфиге: удалённые варианты не должны ломать экран. */
 function load(): Variants {
   try {
-    return { ...DEFAULT_VARIANTS, ...JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') }
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')
+    const valid = Object.fromEntries(VARIANT_GROUPS.filter((g) => g.options.some((o) => o.id === saved[g.key])).map((g) => [g.key, saved[g.key]]))
+    return { ...DEFAULT_VARIANTS, ...valid }
   } catch {
     return DEFAULT_VARIANTS
   }
@@ -22,8 +25,6 @@ export function VariantsProvider({ children }: { children: ReactNode }) {
     } catch {
       /* хранилище недоступно */
     }
-    document.documentElement.dataset.drink = variants.drink
-    document.documentElement.dataset.nav = variants.nav
   }, [variants])
 
   const value = useMemo(() => ({ variants, set: (key: VariantKey, id: string) => setVariants((v) => ({ ...v, [key]: id })) }), [variants])

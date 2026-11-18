@@ -3,16 +3,28 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { Icon } from './Icon'
 import { flowRippleInto } from './spawnRipple'
 
+/** Как появляется шторка: выезжает снизу, раскрывается кругом из угла кнопки или приближается. */
+export type SheetAnimation = 'slide' | 'bloom' | 'zoom'
+
+const ORIGIN = '88% 100%'
+
+const MOTIONS = {
+  slide: { initial: { y: '100%' }, animate: { y: 0 }, exit: { y: '100%' }, transition: { type: 'spring', stiffness: 380, damping: 34 } },
+  bloom: { initial: { clipPath: `circle(0% at ${ORIGIN})` }, animate: { clipPath: `circle(150% at ${ORIGIN})` }, exit: { clipPath: `circle(0% at ${ORIGIN})` }, transition: { duration: 0.65, ease: [0.2, 0.8, 0.2, 1] } },
+  zoom: { initial: { opacity: 0, scale: 0.82, y: 50 }, animate: { opacity: 1, scale: 1, y: 0 }, exit: { opacity: 0, scale: 0.9, y: 30 }, transition: { type: 'spring', stiffness: 300, damping: 26 } },
+} as const
+
 interface Props {
   open: boolean
   label: string
   onClose: () => void
   children: ReactNode
+  animation?: SheetAnimation
 }
 
 /** Стеклянная шторка снизу. Закрывается крестиком, смахиванием за «ручку» или тапом по фону.
  *  Рябь от нажатия на карточку перетекает сюда, когда шторка открывается. */
-export function GlassSheet({ open, label, onClose, children }: Props) {
+export function GlassSheet({ open, label, onClose, children, animation = 'slide' }: Props) {
   const controls = useDragControls()
   const sheet = useRef<HTMLDivElement>(null)
 
@@ -30,10 +42,8 @@ export function GlassSheet({ open, label, onClose, children }: Props) {
             className="sheet"
             role="dialog"
             aria-label={label}
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', stiffness: 380, damping: 34 }}
+            style={{ transformOrigin: ORIGIN }}
+            {...MOTIONS[animation]}
             drag="y"
             dragControls={controls}
             dragListener={false}
