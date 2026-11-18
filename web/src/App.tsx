@@ -10,12 +10,10 @@ type Glass = keyof typeof GLASS
 export default function App() {
   const [sheet, setSheet] = useState(false)
   const [glass, setGlass] = useState<Glass>('liquid')
-  const [dark, setDark] = useState(() => matchMedia('(prefers-color-scheme: dark)').matches)
 
   useEffect(() => {
-    document.documentElement.dataset.theme = dark ? 'dark' : 'light'
     document.documentElement.dataset.glass = glass
-  }, [dark, glass])
+  }, [glass])
 
   return (
     <MotionConfig reducedMotion="user">
@@ -26,7 +24,6 @@ export default function App() {
               {GLASS[g]}
             </button>
           ))}
-          <button onClick={() => setDark(!dark)}>{dark ? 'Светлая' : 'Тёмная'}</button>
         </div>
       )}
       <main className={import.meta.env.DEV ? 'app app-dev' : 'app'}>
