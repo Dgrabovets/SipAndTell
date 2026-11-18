@@ -1589,3 +1589,39 @@ body::-webkit-scrollbar,
 .cal-head .sheet-title {
   padding: 0;
 }
+
+/* Нижние карточки календаря рисуются как на главной: запас под тень, чтобы она не обрывалась */
+.smooth {
+  margin: 0 -32px -16px;
+}
+
+.smooth-inner {
+  padding: 12px 32px 40px;
+}
+
+/* Навигация по центру сверху */
+.nav.top {
+  width: 100%;
+  margin: 0 auto 16px;
+}
+
+.sheet .about .caffeine {
+  color: var(--hint);
+}
+
+.about .caffeine b {
+  color: var(--primary);
+}
+
+/* Панель «Вид» внизу слева, чтобы не лезть на навигацию */
+.vp-toggle {
+  top: auto;
+  right: auto;
+  bottom: 8px;
+  left: 8px;
+}
+
+.vp {
+  top: auto;
+  bottom: 60px;
+}

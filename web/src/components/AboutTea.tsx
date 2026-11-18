@@ -7,7 +7,7 @@ const THINKING_MS = 700
 /** Вкладка «О чае»: справка от ИИ о чае из чаепития. Пока ответ тестовый, перед ним короткая заглушка загрузки. */
 export function AboutTea({ cup }: { cup: Cup }) {
   const [loading, setLoading] = useState(true)
-  const { origin, brew, notes, text } = cup.about
+  const { origin, brew, notes, text, effect, caffeine } = cup.about
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), THINKING_MS)
@@ -42,6 +42,13 @@ export function AboutTea({ cup }: { cup: Cup }) {
                 </li>
               ))}
             </ul>
+          </section>
+          <section>
+            <h3>Эффект</h3>
+            <p className="caffeine">
+              Кофеин: <b>{caffeine}</b>
+            </p>
+            <p>{effect}</p>
           </section>
           <section>
             <h3>Как заваривать</h3>
