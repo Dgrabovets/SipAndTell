@@ -5,7 +5,7 @@ import { DrinkButton } from './components/DrinkButton'
 import { DrinkSheet } from './components/DrinkSheet'
 import { HomeB } from './screens/HomeB'
 
-const FONTS = { system: 'A', serif: 'B', web: 'C' }
+const FONTS = { system: 'A', lora: 'C', nunito: 'D', cormorant: 'E', jost: 'F' }
 type Font = keyof typeof FONTS
 
 export default function App() {

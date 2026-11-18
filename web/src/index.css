@@ -356,13 +356,28 @@ button:focus-visible {
 
 
 /* Шрифты на выбор (пока идёт обсуждение) */
-:root[data-font='serif'] {
-  --font-display: ui-serif, 'Iowan Old Style', Georgia, 'Times New Roman', serif;
-}
-
-:root[data-font='web'] {
+:root[data-font='lora'] {
   --font-body: 'Manrope Variable', system-ui, sans-serif;
   --font-display: 'Lora Variable', Georgia, serif;
+}
+
+:root[data-font='nunito'] {
+  --font-body: 'Nunito Variable', system-ui, sans-serif;
+}
+
+:root[data-font='cormorant'] {
+  --font-body: 'Raleway Variable', system-ui, sans-serif;
+  --font-display: 'Cormorant Variable', Georgia, serif;
+}
+
+:root[data-font='cormorant'] .title,
+:root[data-font='cormorant'] .hero-name,
+:root[data-font='cormorant'] .hero-score {
+  font-weight: 600;
+}
+
+:root[data-font='jost'] {
+  --font-body: 'Jost Variable', system-ui, sans-serif;
 }
 
 .font-switch {
