@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sip & Tell: главная</title>
+<style>
+  /* Цвета как в Telegram themeParams: в приложении их подставит SDK. */
+  :root {
+    --bg: #ffffff; --text: #1c1c1e; --hint: #8a8a8e; --link: #2a7d6b;
+    --button: #2a7d6b; --button-text: #ffffff; --secondary-bg: #f2f2f5; --line: #e4e4e8;
+  }
+  :root[data-theme="dark"] {
+    --bg: #17212b; --text: #f5f5f5; --hint: #7d8e98; --link: #6ab3a3;
+    --button: #3d9c88; --button-text: #ffffff; --secondary-bg: #232e3c; --line: #2c3947;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--secondary-bg); color: var(--text); min-height: 100dvh;
+  }
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 12px;
+    font-size: 14px; color: var(--hint);
+  }
+  .toolbar button {
+    min-height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg); color: var(--text); font: inherit; cursor: pointer;
+  }
+  .toolbar button[aria-pressed="true"] { border-color: var(--button); color: var(--button); }
+
+  .app {
+    position: relative; max-width: 480px; min-height: 100dvh; margin: 0 auto;
+    background: var(--bg); padding-bottom: 96px;
+  }
+  header { padding: 20px 16px 12px; }
+  h1 { font-size: 22px; font-weight: 700; }
+  .sub { color: var(--hint); font-size: 14px; margin-top: 2px; }
+  .day { padding: 16px 16px 6px; font-size: 13px; color: var(--hint); text-transform: uppercase; letter-spacing: .04em; }
+
+  .card { border-bottom: 1px solid var(--line); }
+  .card > button {
+    display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px;
+    padding: 10px 16px; border: 0; background: none; color: inherit; font: inherit;
+    text-align: left; cursor: pointer;
+  }
+  .card .name { font-weight: 600; }
+  .card .type { color: var(--hint); font-size: 14px; }
+  .card .grow { flex: 1; min-width: 0; }
+  .score { font-size: 20px; font-weight: 700; min-width: 40px; text-align: right; }
+  .score small { font-size: 13px; color: var(--hint); font-weight: 400; }
+  .more { display: none; padding: 0 16px 14px; font-size: 15px; }
+  .card.open .more { display: block; }
+  .more dt { color: var(--hint); font-size: 13px; margin-top: 8px; }
+  .more dd { margin: 0; }
+
+  /* Скелетон такого же размера, как строка чаепития: страница не прыгает. */
+  .skeleton { height: 64px; margin: 0 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 12px; }
+  .skeleton i { display: block; border-radius: 6px; background: var(--secondary-bg); }
+  .skeleton .a { flex: 1; height: 36px; } .skeleton .b { width: 40px; height: 24px; }
+
+  .empty { padding: 56px 24px; text-align: center; color: var(--hint); }
+  .empty b { display: block; color: var(--text); font-size: 18px; margin-bottom: 6px; }
+
+  .main-btn {
+    position: fixed; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%);
+    width: min(448px, calc(100% - 32px)); min-height: 52px; border: 0; border-radius: 14px;
+    background: var(--button); color: var(--button-text); font: 600 17px system-ui; cursor: pointer;
+  }
+
+  .sheet-wrap { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); }
+  .sheet-wrap.show { display: block; }
+  .sheet {
+    position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+    width: min(480px, 100%); background: var(--bg); border-radius: 16px 16px 0 0; padding: 20px 16px 28px;
+  }
+  .sheet h2 { font-size: 18px; margin-bottom: 8px; }
+  .sheet p { color: var(--hint); margin-bottom: 16px; }
+  .sheet button { min-height: 44px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line); background: none; color: var(--link); font: inherit; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- Панель ниже только для макета: переключает состояния и тему. В приложении её нет. -->
+<div class="toolbar" role="group" aria-label="Состояния макета">
+  <button data-state="list" aria-pressed="true">Список</button>
+  <button data-state="loading" aria-pressed="false">Загрузка</button>
+  <button data-state="empty" aria-pressed="false">Пусто</button>
+  <button id="theme">Тёмная тема</button>
+</div>
+
+<main class="app" id="app">
+  <header>
+    <h1>Мой чайный дневник</h1>
+    <p class="sub" id="sub">14 чаепитий в этом месяце</p>
+  </header>
+  <div id="content"></div>
+  <button class="main-btn" id="drink">Выпил</button>
+</main>
+
+<div class="sheet-wrap" id="sheet-wrap">
+  <div class="sheet" role="dialog" aria-label="Выпил">
+    <h2>Что ты пил?</h2>
+    <p>Здесь откроется форма: чай, оценка, настроение, обстоятельства, отзыв. Её рисуем следующим макетом.</p>
+    <button id="close">Назад</button>
+  </div>
+</div>
+
+<script>
+  const DATA = [
+    { day: 'Сегодня', items: [
+      { name: 'Да Хун Пао', type: 'Улун', score: 9, mood: 'Спокойно', place: 'Дома, вечером, за книгой', review: 'Тёплый, с минеральной ноткой. Заварил 6 раз.' },
+      { name: 'Сенча Фукуджу', type: 'Зелёный', score: 7, mood: 'Бодро', place: 'На работе, утром', review: 'Свежий, но к третьей заварке пресный.' },
+    ]},
+    { day: 'Вчера', items: [
+      { name: 'Шу Пуэр 2018', type: 'Пуэр', score: 8, mood: 'Задумчиво', place: 'С друзьями', review: 'Земляной, густой. Друзьям понравился.' },
+    ]},
+  ];
+  const content = document.getElementById('content');
+  const sub = document.getElementById('sub');
+
+  const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  const views = {
+    list() {
+      sub.textContent = '14 чаепитий в этом месяце';
+      content.innerHTML = DATA.map(g => `
+        <div class="day">${g.day}</div>` + g.items.map(i => `
+        <div class="card">
+          <button aria-expanded="false">
+            <span class="grow"><span class="name">${esc(i.name)}</span><br><span class="type">${esc(i.type)}</span></span>
+            <span class="score">${i.score}<small>/10</small></span>
+          </button>
+          <dl class="more">
+            <dt>Настроение</dt><dd>${esc(i.mood)}</dd>
+            <dt>Обстоятельства</dt><dd>${esc(i.place)}</dd>
+            <dt>Отзыв</dt><dd>${esc(i.review)}</dd>
+          </dl>
+        </div>`).join('')).join('');
+    },
+    loading() {
+      sub.textContent = ' ';
+      content.innerHTML = '<div class="day">&nbsp;</div>' + '<div class="skeleton"><i class="a"></i><i class="b"></i></div>'.repeat(4);
+    },
+    empty() {
+      sub.textContent = 'Пока пусто';
+      content.innerHTML = '<div class="empty"><b>Ещё нет чаепитий</b>Нажми «Выпил», когда заваришь первый чай.</div>';
+    },
+  };
+
+  function show(state) {
+    views[state]();
+    document.querySelectorAll('[data-state]').forEach(b => b.setAttribute('aria-pressed', b.dataset.state === state));
+  }
+  document.querySelectorAll('[data-state]').forEach(b => b.onclick = () => show(b.dataset.state));
+  content.addEventListener('click', e => {
+    const btn = e.target.closest('.card > button');
+    if (!btn) return;
+    const card = btn.parentElement;
+    btn.setAttribute('aria-expanded', card.classList.toggle('open'));
+  });
+
+  const wrap = document.getElementById('sheet-wrap');
+  document.getElementById('drink').onclick = () => wrap.classList.add('show');
+  document.getElementById('close').onclick = () => wrap.classList.remove('show');
+  wrap.onclick = e => { if (e.target === wrap) wrap.classList.remove('show'); };
+
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('theme');
+  if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+  themeBtn.onclick = () => { root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark'; };
+
+  show('list');
+</script>
+</body>
+</html>
