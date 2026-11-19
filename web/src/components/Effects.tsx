@@ -1,9 +1,6 @@
 import { motion } from 'motion/react'
 import { useState, type CSSProperties } from 'react'
-import { CUPS, EFFECTS_COUNT, type Cup } from '../data/cups'
-
-/** Названия семи осей, порядок как в данных чашки. Как в дневнике, прошедшим временем от первого лица. */
-const LABELS = ['Взбодрил', 'Успокоил', 'Согрел', 'Собрал мысли', 'Разморило', 'Поднял настроение', 'Взвинтил']
+import { CUPS, EFFECTS_COUNT, EFFECT_LABELS, type Cup } from '../data/cups'
 
 /** Одна линия на графике: чьи это значения, каким цветом и как подписать. */
 interface Series {
@@ -44,7 +41,7 @@ const averageOf = (list: number[][]) => Array.from({ length: EFFECTS_COUNT }, (_
 function Bars({ series }: { series: Series[] }) {
   return (
     <div className="eff-bars">
-      {LABELS.map((label, a) => (
+      {EFFECT_LABELS.map((label, a) => (
         <div className="eff-bar" key={label}>
           <span>{label}</span>
           <div className="eff-lines">

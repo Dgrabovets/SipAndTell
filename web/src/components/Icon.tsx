@@ -48,6 +48,24 @@ const PATHS: Record<string, ReactNode> = {
   ),
   spark: <path d="M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8zM19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z" />,
   pulse: <path d="M3 12h4l3-7 4 14 3-7h4" />,
+  camera: (
+    <>
+      <path d="M4 8h3l1.6-2.4h6.8L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" />
+      <circle cx="12" cy="13" r="3.6" />
+    </>
+  ),
+  video: (
+    <>
+      <rect x="3" y="6.5" width="13" height="11" rx="2" />
+      <path d="M16 11l5-3v8l-5-3z" />
+    </>
+  ),
+  mic: (
+    <>
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" />
+    </>
+  ),
   back: <path d="M15 6l-6 6 6 6" />,
   forward: <path d="M9 6l6 6-6 6" />,
   grid: <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />,

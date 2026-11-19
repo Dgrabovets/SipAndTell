@@ -26,6 +26,9 @@ export interface TeaAbout {
  *  у каждого человека по каждой своя сила от 0 до 1. Подписи осей лежат в components/effectWords.ts. */
 export const EFFECTS_COUNT = 7
 
+/** Названия семи осей, порядок как в данных чашки. Как в дневнике, прошедшим временем от первого лица. */
+export const EFFECT_LABELS = ['Взбодрил', 'Успокоил', 'Согрел', 'Собрал мысли', 'Разморило', 'Поднял настроение', 'Взвинтил']
+
 export interface Cup {
   id: number
   name: string

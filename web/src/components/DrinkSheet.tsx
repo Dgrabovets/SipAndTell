@@ -1,4 +1,5 @@
 import { useEffect, useState, type CSSProperties } from 'react'
+import { DrinkForm } from './DrinkForm'
 import { GlassSheet } from './GlassSheet'
 
 /** Сколько живёт пар: дольше самой длинной анимации, после этого слой убирается. */
@@ -46,14 +47,13 @@ interface Props {
   onClose: () => void
 }
 
-/** Заглушка формы «Выпил»: сама форма рисуется следующим шагом. */
+/** Шторка «Выпил»: форма с заполнением по фото, видео и рассказу. Пар играет отдельным слоем. */
 export function DrinkSheet({ open, onClose }: Props) {
   return (
     <>
       <Steam trigger={open} />
       <GlassSheet open={open} label="Выпил" onClose={onClose}>
-        <h2 className="sheet-title">Что ты пил?</h2>
-        <p className="sheet-sub">Здесь будет форма: чай, оценка, настроение, обстоятельства, отзыв.</p>
+        <DrinkForm onDone={onClose} />
       </GlassSheet>
     </>
   )
