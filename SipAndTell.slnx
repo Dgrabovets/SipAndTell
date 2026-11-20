@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SipAndTell.Application/SipAndTell.Application.csproj" />
+  <Project Path="SipAndTell.Infrastructure/SipAndTell.Infrastructure.csproj" />
+  <Project Path="SipAndTell.Server.Tests/SipAndTell.Server.Tests.csproj" />
+  <Project Path="SipAndTell.Server/SipAndTell.Server.csproj" />
+</Solution>
