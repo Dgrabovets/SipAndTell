@@ -6,7 +6,7 @@ const OPEN = -132
 
 /** Карточка, которую можно сдвинуть влево: под ней появляются «Изменить» и «Удалить».
  *  Кнопки проявляются по мере сдвига, чтобы не просвечивать сквозь прозрачное стекло. */
-export function SwipeRow({ children }: { children: ReactNode }) {
+export function SwipeRow({ children, onEdit, onDelete }: { children: ReactNode; onEdit: () => void; onDelete: () => void }) {
   const x = useMotionValue(0)
   const reveal = useTransform(x, [-20, -90], [0, 1])
   const dragged = useRef(false)
@@ -14,10 +14,10 @@ export function SwipeRow({ children }: { children: ReactNode }) {
   return (
     <div className="swipe">
       <motion.div className="swipe-actions" style={{ opacity: reveal }}>
-        <button aria-label="Изменить">
+        <button aria-label="Изменить" onClick={onEdit}>
           <Icon name="edit" />
         </button>
-        <button className="danger" aria-label="Удалить">
+        <button className="danger" aria-label="Удалить" onClick={onDelete}>
           <Icon name="trash" />
         </button>
       </motion.div>

@@ -2129,3 +2129,16 @@ body::-webkit-scrollbar,
     animation: none;
   }
 }
+
+/* Подтверждение удаления */
+.confirm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.glass-btn.danger {
+  border-color: color-mix(in srgb, #e0786a 55%, transparent);
+  color: #e0786a;
+}

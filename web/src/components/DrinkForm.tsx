@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { EFFECT_LABELS, TEA_COLOR, type Daytime, type Place, type TeaType } from '../data/cups'
+import { EFFECT_LABELS, TEA_COLOR, type Cup, type Daytime, type Place, type TeaType } from '../data/cups'
+import type { DrinkRequest } from '../data/drinkStore'
+import { cupStore } from '../data/store'
 import { AXES } from '../data/moods'
 import { useVariants } from '../variants/useVariants'
 import { Icon } from './Icon'
@@ -24,6 +26,16 @@ interface Draft {
   effects: number[]
   review: string
 }
+
+/** Справка для чая, о котором пока ничего не известно: настоящую даст ИИ после проверки. */
+const NEW_ABOUT: Cup['about'] = { origin: '', brew: '', notes: [], text: 'Справку подготовим, когда чай пройдёт проверку.', effect: '', caffeine: '' }
+
+const timeNow = (): Daytime => {
+  const h = new Date().getHours()
+  return h < 11 ? 'morning' : h < 18 ? 'day' : 'evening'
+}
+
+const draftOf = (cup: Cup): Draft => ({ name: cup.name, type: cup.type, score: cup.score, place: cup.place, time: cup.time, mood: cup.mood, effects: cup.effects['Ты'], review: cup.review })
 
 const EMPTY: Draft = { name: '', type: null, score: null, place: null, time: null, mood: AXES.map(() => 0), effects: EFFECT_LABELS.map(() => 0), review: '' }
 
@@ -80,16 +92,33 @@ function LevelChips({ labels, values, colors, onChange }: { labels: string[]; va
 }
 
 /** Форма «Выпил»: съёмка и рассказ заполняют поля, человек правит. Вид кнопок съёмки выбирается в панели «Вид». */
-export function DrinkForm({ onDone }: { onDone: () => void }) {
+export function DrinkForm({ seed, target, onDone }: { seed?: DrinkRequest['seed']; target?: Cup; onDone: () => void }) {
   const { variants } = useVariants()
   const style = variants.capture
-  const [draft, setDraft] = useState<Draft>(EMPTY)
+  const [draft, setDraft] = useState<Draft>(() => (target ? draftOf(target) : { ...EMPTY, ...seed }))
   const [ai, setAi] = useState<Set<keyof Draft>>(new Set())
   const [phase, setPhase] = useState<'idle' | 'recording' | 'thinking'>('idle')
   const [source, setSource] = useState<Source>('photo')
   const [preview, setPreview] = useState<string | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const filled = ai.size > 0
+
+  /** Сохранение: правка меняет чашку, новая добавляется. Справка берётся у уже известного чая с тем же названием. */
+  const save = () => {
+    const known = cupStore.known(draft.name)
+    const fields = {
+      name: draft.name.trim(),
+      type: draft.type!,
+      score: draft.score!,
+      mood: draft.mood,
+      place: draft.place ?? 'home',
+      time: draft.time ?? timeNow(),
+      review: draft.review,
+    }
+    if (target) cupStore.update({ ...target, ...fields, effects: { ...target.effects, Ты: draft.effects } })
+    else cupStore.add({ ...fields, friends: [], date: new Date(), about: known?.about ?? NEW_ABOUT, effects: { Ты: draft.effects } })
+    onDone()
+  }
 
   useEffect(() => () => clearTimeout(timer.current), [])
 
@@ -151,7 +180,7 @@ export function DrinkForm({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="drink-form">
-      <h2 className="sheet-title">Что ты пил?</h2>
+      <h2 className="sheet-title">{target ? 'Правка чаепития' : 'Что ты пил?'}</h2>
       {style !== 'dock' && capture}
 
       <AnimatePresence>
@@ -239,8 +268,8 @@ export function DrinkForm({ onDone }: { onDone: () => void }) {
 
       {style === 'dock' && capture}
 
-      <motion.button className="save-btn" whileTap={{ scale: 0.97 }} disabled={!draft.name || !draft.type} onClick={onDone}>
-        Сохранить
+      <motion.button className="save-btn" whileTap={{ scale: 0.97 }} disabled={!draft.name.trim() || !draft.type || draft.score === null} onClick={save}>
+        {target ? 'Сохранить правку' : 'Сохранить'}
       </motion.button>
     </div>
   )

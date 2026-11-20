@@ -12,6 +12,12 @@ import { Smooth } from './Smooth'
 const PLACE: Record<Place, string> = { home: 'Дома', work: 'На работе', friends: 'С друзьями', road: 'В дороге' }
 const TIME: Record<Daytime, string> = { morning: 'Утро', day: 'День', evening: 'Вечер' }
 
+export interface CupActions {
+  onAgain: () => void
+  onEdit: () => void
+  onDelete: () => void
+}
+
 const REVIEW_PREVIEW = 90
 const SWIPE_PX = 60
 
@@ -20,7 +26,7 @@ const EFFECT = { id: 'effect', label: 'Эффект', icon: 'pulse' }
 const ABOUT = { id: 'about', label: 'О чае', icon: 'spark' }
 
 /** Первая вкладка: настроение радаром, обстоятельства значками, короткий отзыв, друзья, действия. */
-function MyCup({ cup }: { cup: Cup }) {
+function MyCup({ cup, actions }: { cup: Cup; actions: CupActions }) {
   const [full, setFull] = useState(false)
   const long = cup.review.length > REVIEW_PREVIEW
   const circumstances = [
@@ -52,7 +58,7 @@ function MyCup({ cup }: { cup: Cup }) {
       </blockquote>
 
       <Friends cup={cup} />
-      <Actions />
+      <Actions cup={cup} onAgain={actions.onAgain} onEdit={actions.onEdit} onDelete={actions.onDelete} />
     </div>
   )
 }
@@ -74,7 +80,7 @@ function TabBar({ tabs, tab, onTab }: { tabs: (typeof MINE)[]; tab: number; onTa
 
 /** Детали чаепития во вкладках: «Моё чаепитие», «Эффект» и «О чае» (справка от ИИ).
  *  Содержимое сдвигается по направлению вкладки, высота меняется плавно, вкладки листаются тапом и свайпом вбок. */
-export function CupDetails({ cup }: { cup: Cup }) {
+export function CupDetails({ cup, actions }: { cup: Cup; actions: CupActions }) {
   const tabs = [MINE, EFFECT, ABOUT]
   const [[picked, dir], setTab] = useState([0, 1])
   const tab = Math.min(picked, tabs.length - 1)
@@ -105,7 +111,7 @@ export function CupDetails({ cup }: { cup: Cup }) {
               if (info.offset.x > SWIPE_PX) go(Math.max(tab - 1, 0))
             }}
           >
-            {tabs[tab].id === 'mine' && <MyCup cup={cup} />}
+            {tabs[tab].id === 'mine' && <MyCup cup={cup} actions={actions} />}
             {tabs[tab].id === 'effect' && <EffectTab cup={cup} />}
             {tabs[tab].id === 'about' && <AboutTea cup={cup} />}
           </motion.div>

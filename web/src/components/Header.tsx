@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import { useState, type ReactNode } from 'react'
-import { CUPS, TEA_COLOR, type Cup } from '../data/cups'
+import { TEA_COLOR, type Cup } from '../data/cups'
+import { useCups } from '../data/store'
 import { WEEKDAYS, dayKey, weekdayOf } from '../data/days'
 
 const WEEK_DAYS = 7
@@ -14,10 +15,10 @@ function weekDays(now: Date): Date[] {
 }
 
 /** Сводка за последние семь дней: сколько чашек, средняя оценка, любимый тип и чашки по дням. */
-function weekStats(now: Date) {
+function weekStats(all: Cup[], now: Date) {
   const days = weekDays(now)
   const from = +days[0]
-  const cups = CUPS.filter((c) => +c.date >= from - DAY_MS / 2)
+  const cups = all.filter((c) => +c.date >= from - DAY_MS / 2)
   const average = cups.reduce((sum, c) => sum + c.score, 0) / (cups.length || 1)
   const counts = new Map<string, number>()
   for (const c of cups) counts.set(c.type, (counts.get(c.type) ?? 0) + 1)
@@ -54,7 +55,7 @@ function Week({ s }: { s: Stats }) {
 /** Шапка главной: приветствие, сводка недели и справа место под действие. */
 export function Header({ action }: { action?: ReactNode }) {
   const [now] = useState(() => new Date())
-  const s = weekStats(now)
+  const s = weekStats(useCups(), now)
 
   return (
     <>

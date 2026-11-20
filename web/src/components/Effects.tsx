@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import { useState, type CSSProperties } from 'react'
-import { CUPS, EFFECTS_COUNT, EFFECT_LABELS, type Cup } from '../data/cups'
+import { EFFECTS_COUNT, EFFECT_LABELS, type Cup } from '../data/cups'
+import { useCups } from '../data/store'
 
 /** Одна линия на графике: чьи это значения, каким цветом и как подписать. */
 interface Series {
@@ -63,31 +64,31 @@ function Bars({ series }: { series: Series[] }) {
 /** Вкладка «Эффект». Два режима: твоя оценка рядом со средней по друзьям и сравнение твоей оценки с другим чаем.
  *   */
 export function EffectTab({ cup }: { cup: Cup }) {
-  const [mode, setMode] = useState<Mode>('both')
-  const others = CUPS.filter((c) => c.id !== cup.id)
+  const [asked, setMode] = useState<Mode>('both')
+  const others = useCups().filter((c) => c.id !== cup.id)
   const [pickedId, setPickedId] = useState<number | null>(null)
   const other = others.find((c) => c.id === pickedId) ?? others[0]
+  const canCompare = others.length > 0
   const friendNames = Object.keys(cup.effects).filter((n) => n !== 'Ты')
+  const mode: Mode = asked === 'versus' && canCompare ? 'versus' : 'both'
   const mine = cup.effects['Ты']
+  const hasFriends = friendNames.length > 0
   const sameTea = cup.type === other.type
 
   const series: Series[] =
     mode === 'both'
-      ? [
-          { name: 'Ты', color: YOU_BAR, values: mine },
-          { name: 'Друзья', color: FRIENDS_BAR, values: averageOf(friendNames.map((n) => cup.effects[n])) },
-        ]
+      ? [{ name: 'Ты', color: YOU_BAR, values: mine }, ...(hasFriends ? [{ name: 'Друзья', color: FRIENDS_BAR, values: averageOf(friendNames.map((n) => cup.effects[n])) }] : [])]
       : [
           { name: cup.name, color: TEA_CHART[cup.type], values: mine },
           { name: other.name, color: sameTea ? SAME_TYPE : TEA_CHART[other.type], values: other.effects['Ты'] },
         ]
 
-  const caption = mode === 'both' ? `Друзья, которых посчитали: ${friendNames.join(', ')}.` : 'Твои ощущения от двух чаёв рядом.'
+  const caption = mode === 'both' ? (hasFriends ? `Друзья, которых посчитали: ${friendNames.join(', ')}.` : 'Друзья пока не отметили, как подействовал этот чай.') : 'Твои ощущения от двух чаёв рядом.'
 
   return (
     <div className="details effect-tab">
       <div className="seg" role="tablist" aria-label="Что показать">
-        {MODES.map((m) => (
+        {MODES.filter((m) => m.id === 'both' || canCompare).map((m) => (
           <button key={m.id} role="tab" aria-selected={mode === m.id} onClick={() => setMode(m.id)}>
             {mode === m.id && <motion.span className="seg-mark" layoutId="seg-mark" transition={{ type: 'spring', stiffness: 460, damping: 34 }} />}
             <span>{m.label}</span>

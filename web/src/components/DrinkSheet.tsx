@@ -1,4 +1,5 @@
 import { useEffect, useState, type CSSProperties } from 'react'
+import { drinkStore, useDrinkRequest } from '../data/drinkStore'
 import { DrinkForm } from './DrinkForm'
 import { GlassSheet } from './GlassSheet'
 
@@ -42,18 +43,15 @@ function Steam({ trigger }: { trigger: boolean }) {
   )
 }
 
-interface Props {
-  open: boolean
-  onClose: () => void
-}
-
 /** Шторка «Выпил»: форма с заполнением по фото, видео и рассказу. Пар играет отдельным слоем. */
-export function DrinkSheet({ open, onClose }: Props) {
+export function DrinkSheet() {
+  const request = useDrinkRequest()
+
   return (
     <>
-      <Steam trigger={open} />
-      <GlassSheet open={open} label="Выпил" onClose={onClose}>
-        <DrinkForm onDone={onClose} />
+      <Steam trigger={request.open} />
+      <GlassSheet open={request.open} label="Выпил" onClose={drinkStore.close}>
+        <DrinkForm key={request.id} seed={request.seed} target={request.edit} onDone={drinkStore.close} />
       </GlassSheet>
     </>
   )

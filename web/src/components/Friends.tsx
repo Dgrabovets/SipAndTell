@@ -15,9 +15,9 @@ function marksOf(cup: Cup) {
 
 /** Сравнение с друзьями: одна шкала от 0 до 10 с цветными метками, ниже небольшая легенда. */
 export function Friends({ cup }: { cup: Cup }) {
-  const average = cup.friends.reduce((sum, f) => sum + f.score, 0) / cup.friends.length
+  const average = cup.friends.reduce((sum, f) => sum + f.score, 0) / (cup.friends.length || 1)
   const diff = cup.score - average
-  const note = Math.abs(diff) < 0.5 ? 'Оценки почти совпали' : diff > 0 ? `Ты щедрее друзей на ${oneDecimal(diff)}` : `Друзья щедрее тебя на ${oneDecimal(-diff)}`
+  const note = cup.friends.length === 0 ? 'Друзья пока не оценили этот чай' : Math.abs(diff) < 0.5 ? 'Оценки почти совпали' : diff > 0 ? `Ты щедрее друзей на ${oneDecimal(diff)}` : `Друзья щедрее тебя на ${oneDecimal(-diff)}`
 
   return (
     <section className="friends" aria-label="Оценки друзей">

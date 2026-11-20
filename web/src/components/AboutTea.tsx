@@ -29,10 +29,13 @@ export function AboutTea({ cup }: { cup: Cup }) {
         </div>
       ) : (
         <>
+          {origin && (
           <section>
             <h3>Откуда</h3>
             <p>{origin}</p>
           </section>
+          )}
+          {notes.length > 0 && (
           <section>
             <h3>Вкус</h3>
             <ul className="about-notes">
@@ -43,6 +46,8 @@ export function AboutTea({ cup }: { cup: Cup }) {
               ))}
             </ul>
           </section>
+          )}
+          {effect && (
           <section>
             <h3>Эффект</h3>
             <p className="caffeine">
@@ -50,10 +55,13 @@ export function AboutTea({ cup }: { cup: Cup }) {
             </p>
             <p>{effect}</p>
           </section>
+          )}
+          {brew && (
           <section>
             <h3>Как заваривать</h3>
             <p>{brew}</p>
           </section>
+          )}
           <section>
             <h3>О чае</h3>
             <p>{text}</p>

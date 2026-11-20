@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useState, type CSSProperties } from 'react'
-import { CUPS, TEA_COLOR } from '../data/cups'
+import { TEA_COLOR, type Cup } from '../data/cups'
+import { useCups } from '../data/store'
 import { MONTHS, WEEKDAYS, dayKey, longDay, weekdayOf } from '../data/days'
 import { CupCard } from './CupCard'
 import { GlassSheet } from './GlassSheet'
@@ -8,7 +9,7 @@ import { Icon } from './Icon'
 import { Smooth } from './Smooth'
 
 const WEEKS = 6
-const cupsOf = (key: string) => CUPS.filter((c) => dayKey(c.date) === key)
+const cupsOf = (cups: Cup[], key: string) => cups.filter((c) => dayKey(c.date) === key)
 
 /** Кнопка в шапке, открывает шторку с месяцем. */
 export function CalendarButton({ onClick }: { onClick: () => void }) {
@@ -35,11 +36,12 @@ interface Props {
 /** Компактная шторка с месяцем. Размер постоянный: всегда шесть рядов. Месяцы листаются со сдвигом,
  *  тап по дню показывает его чашки теми же карточками, что на главной. Высота списка под месяцем меняется плавно. */
 export function MonthSheet({ open, onClose, onOpenCup }: Props) {
+  const cups = useCups()
   const [now] = useState(() => new Date())
   const [shown, setShown] = useState({ year: now.getFullYear(), month: now.getMonth(), dir: 1 })
   const [peek, setPeek] = useState(dayKey(now))
   const today = dayKey(now)
-  const dayCups = cupsOf(peek)
+  const dayCups = cupsOf(cups, peek)
   const peekDate = new Date(`${peek}T12:00:00`)
   const monthKey = shown.year * 12 + shown.month
 
@@ -100,7 +102,7 @@ export function MonthSheet({ open, onClose, onOpenCup }: Props) {
           >
             {monthCells(shown.year, shown.month).map((d) => {
               const key = dayKey(d)
-              const colors = [...new Set(cupsOf(key).map((c) => TEA_COLOR[c.type]))]
+              const colors = [...new Set(cupsOf(cups, key).map((c) => TEA_COLOR[c.type]))]
               return (
                 <button key={key} className={d.getMonth() === shown.month ? 'cal-day' : 'cal-day out'} style={{ '--today': key === today ? 1 : 0 } as CSSProperties} aria-pressed={peek === key} onClick={() => pick(d)}>
                   <b>{d.getDate()}</b>
