@@ -66,6 +66,7 @@ const PATHS: Record<string, ReactNode> = {
       <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3" />
     </>
   ),
+  chart: <path d="M5 20V10M12 20V4M19 20v-7" />,
   back: <path d="M15 6l-6 6 6 6" />,
   forward: <path d="M9 6l6 6-6 6" />,
   grid: <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />,

@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { useState, type CSSProperties } from 'react'
-import { EFFECTS_COUNT, EFFECT_LABELS, type Cup } from '../data/cups'
+import { EFFECTS_COUNT, EFFECT_LABELS, SAME_TYPE, TEA_CHART, type Cup } from '../data/cups'
 import { useCups } from '../data/store'
 
 /** Одна линия на графике: чьи это значения, каким цветом и как подписать. */
@@ -20,18 +20,6 @@ const MODES: { id: Mode; label: string }[] = [
 /** Цвета режима «Ты и друзья»: твой янтарный, средний по друзьям сиреневый. */
 const YOU_BAR = '#f2a33a'
 const FRIENDS_BAR = '#b78cf5'
-
-/** Яркие цвета типов чая для графика: на тёмном фоне они должны различаться с первого взгляда. */
-const TEA_CHART: Record<string, string> = {
-  Улун: '#f2a33a',
-  Зелёный: '#7ed957',
-  Пуэр: '#d4623f',
-  Чёрный: '#ff5a8a',
-  Белый: '#efe3b8',
-}
-
-/** Если сравнивают два чая одного типа, второму достаётся бирюзовый. */
-const SAME_TYPE = '#3fe0cf'
 
 /** Число из десяти с одной десятой: средние значения не должны округляться до целого. */
 const tenths = (v: number) => (v * 10).toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 })

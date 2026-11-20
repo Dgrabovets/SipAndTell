@@ -5,13 +5,16 @@ import { CupCard } from '../components/CupCard'
 import { CupDetails } from '../components/CupDetails'
 import { GlassSheet } from '../components/GlassSheet'
 import { Header } from '../components/Header'
-import { Nav } from '../components/Nav'
+import { Nav, type Tab } from '../components/Nav'
 import { Score } from '../components/Score'
 import { SwipeRow } from '../components/SwipeRow'
 import { TEA_COLOR, type Cup } from '../data/cups'
 import { drinkStore } from '../data/drinkStore'
 import { cupStore, useCups } from '../data/store'
 import { dayGroup } from '../data/days'
+import { CatalogScreen } from './CatalogScreen'
+import { FriendsScreen } from './FriendsScreen'
+import { StatsScreen } from './StatsScreen'
 
 /** Карточки по группам: «Сегодня», «Вчера», «На этой неделе» и так далее, порядок как в списке. */
 function grouped(cups: Cup[]): [string, Cup[]][] {
@@ -28,6 +31,7 @@ export function Home() {
   const cups = useCups()
   const order = new Map(cups.map((c, i) => [c.id, i]))
   const [toDelete, setToDelete] = useState<Cup | null>(null)
+  const [tab, setTab] = useState<Tab>('diary')
   const [openId, setOpenId] = useState<number | null>(null)
   const [shown, setShown] = useState(false)
   const [month, setMonth] = useState(false)
@@ -43,10 +47,13 @@ export function Home() {
 
   return (
     <>
-      <Nav />
-      <Header action={<CalendarButton onClick={() => setMonth(true)} />} />
+      <Nav active={tab} onChange={setTab} />
+      {tab === 'friends' && <FriendsScreen />}
+      {tab === 'catalog' && <CatalogScreen />}
+      {tab === 'stats' && <StatsScreen />}
+      {tab === 'diary' && <Header action={<CalendarButton onClick={() => setMonth(true)} />} />}
 
-      {grouped(cups).map(([label, group]) => (
+      {tab === 'diary' && grouped(cups).map(([label, group]) => (
         <section key={label}>
           <h2 className="day-label">{label}</h2>
           <ul className="list">

@@ -2142,3 +2142,206 @@ body::-webkit-scrollbar,
   border-color: color-mix(in srgb, #e0786a 55%, transparent);
   color: #e0786a;
 }
+
+/* Четыре раздела: подписи чуть мельче */
+.nav button {
+  gap: 4px;
+  font-size: 13px;
+}
+
+.nav .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Друзья */
+.invite {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.invite-link {
+  margin: 6px 4px 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friend-cards {
+  margin-top: 18px;
+}
+
+.friend-card {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 22px;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--c) 14%, transparent), transparent 70%), var(--glass-bg);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
+}
+
+.friend-avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--on-primary);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.friend-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.friend-body small {
+  color: var(--hint);
+  font-size: 13px;
+}
+
+.friend-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.friend-bars > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.friend-bars i {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--c);
+}
+
+.friend-bars i.you {
+  background: #f2a33a;
+}
+
+.friend-bars em {
+  min-width: 30px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Каталог */
+.catalog-search {
+  margin-top: 16px;
+}
+
+.cat-list {
+  margin-top: 14px;
+}
+
+.cat-item .hero-name small {
+  display: block;
+  margin-top: 2px;
+  color: var(--hint);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* Графики */
+.stat-card {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 22px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
+}
+
+.stat-card .block-title.second {
+  margin-top: 16px;
+}
+
+.bars14 {
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  gap: 3px;
+}
+
+.bars14 .week-col {
+  height: 84px;
+}
+
+.bars14 .week-stack {
+  max-width: 16px;
+}
+
+.bars14 .week-col small {
+  font-size: 10px;
+}
+
+.type-row {
+  display: grid;
+  grid-template-columns: 96px 1fr 34px;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  font-size: 14px;
+}
+
+.type-row small {
+  color: var(--hint);
+}
+
+.type-row b {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.share {
+  display: flex;
+  gap: 3px;
+  height: 14px;
+}
+
+.share i {
+  min-width: 4px;
+  border-radius: 7px;
+}
+
+.share-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.share-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.share-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.stat-card .mood-block {
+  margin-top: 4px;
+}
