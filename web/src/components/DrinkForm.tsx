@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { EFFECT_LABELS, TEA_COLOR, type Cup, type Daytime, type Place, type TeaType } from '../data/cups'
 import type { DrinkRequest } from '../data/drinkStore'
 import { cupStore } from '../data/store'
+import { chime, haptics } from '../feedback'
 import { AXES } from '../data/moods'
 import { useVariants } from '../variants/useVariants'
 import { Icon } from './Icon'
@@ -53,6 +54,8 @@ const FROM_VOICE: Partial<Draft> = {
 type Source = 'photo' | 'video' | 'voice'
 const STATUS: Record<Source, string> = { photo: 'Смотрю на фото', video: 'Смотрю и слушаю видео', voice: 'Расшифровываю рассказ' }
 const RECORD_MS = 2400
+/** Самое длинное голосовое: запись сама останавливается. */
+const MAX_RECORD_MS = 90_000
 const THINK_MS = 1300
 
 const CAPTURE: { id: Source; label: string; icon: string }[] = [
@@ -117,6 +120,8 @@ export function DrinkForm({ seed, target, onDone }: { seed?: DrinkRequest['seed'
     }
     if (target) cupStore.update({ ...target, ...fields, effects: { ...target.effects, Ты: draft.effects } })
     else cupStore.add({ ...fields, friends: [], date: new Date(), about: known?.about ?? NEW_ABOUT, effects: { Ты: draft.effects } })
+    haptics.success()
+    chime()
     onDone()
   }
 
@@ -154,18 +159,41 @@ export function DrinkForm({ seed, target, onDone }: { seed?: DrinkRequest['seed'
     analyse(from)
   }
 
-  const record = () => {
-    setPhase('recording')
-    timer.current = setTimeout(() => analyse('voice'), RECORD_MS)
+  const recorder = useRef<MediaRecorder>(undefined)
+
+  /** Настоящая запись с микрофона: нажал, говоришь, нажал ещё раз. Звук нигде не сохраняется, после остановки
+   *  идёт имитация расшифровки. Если микрофон недоступен, работает короткая имитация записи. */
+  const record = async () => {
+    if (phase === 'recording') {
+      if (recorder.current?.state === 'recording') recorder.current.stop()
+      return
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const media = new MediaRecorder(stream)
+      media.onstop = () => {
+        clearTimeout(timer.current)
+        stream.getTracks().forEach((t) => t.stop())
+        analyse('voice')
+      }
+      media.start()
+      recorder.current = media
+      setPhase('recording')
+      timer.current = setTimeout(() => media.stop(), MAX_RECORD_MS)
+    } catch {
+      recorder.current = undefined
+      setPhase('recording')
+      timer.current = setTimeout(() => analyse('voice'), RECORD_MS)
+    }
   }
 
   const capture = (
     <div className="cap" data-style={style} data-filled={filled} role="group" aria-label="Заполнить по фото, видео или рассказу">
       {CAPTURE.map((c) =>
         c.id === 'voice' ? (
-          <motion.button key={c.id} className={phase === 'recording' ? 'cap-btn cap-voice rec' : 'cap-btn cap-voice'} whileTap={{ scale: 0.94 }} onClick={record} disabled={phase !== 'idle'}>
+          <motion.button key={c.id} className={phase === 'recording' ? 'cap-btn cap-voice rec' : 'cap-btn cap-voice'} whileTap={{ scale: 0.94 }} onClick={record} disabled={phase === 'thinking'}>
             <Icon name={c.icon} />
-            <span>{phase === 'recording' ? 'Говори' : c.label}</span>
+            <span>{phase === 'recording' ? 'Стоп' : c.label}</span>
           </motion.button>
         ) : (
           <motion.label key={c.id} className="cap-btn" whileTap={{ scale: 0.94 }}>

@@ -2345,3 +2345,14 @@ body::-webkit-scrollbar,
 .stat-card .mood-block {
   margin-top: 4px;
 }
+
+/* Кнопки справа в шапке дневника */
+.head-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.head-actions .round-icon {
+  width: 48px;
+  height: 48px;
+}

@@ -5,12 +5,14 @@ import { CupCard } from '../components/CupCard'
 import { CupDetails } from '../components/CupDetails'
 import { GlassSheet } from '../components/GlassSheet'
 import { Header } from '../components/Header'
+import { SoundToggle } from '../components/SoundToggle'
 import { Nav, type Tab } from '../components/Nav'
 import { Score } from '../components/Score'
 import { SwipeRow } from '../components/SwipeRow'
 import { TEA_COLOR, type Cup } from '../data/cups'
 import { drinkStore } from '../data/drinkStore'
 import { cupStore, useCups } from '../data/store'
+import { haptics } from '../feedback'
 import { dayGroup } from '../data/days'
 import { CatalogScreen } from './CatalogScreen'
 import { FriendsScreen } from './FriendsScreen'
@@ -51,7 +53,24 @@ export function Home() {
       {tab === 'friends' && <FriendsScreen />}
       {tab === 'catalog' && <CatalogScreen />}
       {tab === 'stats' && <StatsScreen />}
-      {tab === 'diary' && <Header action={<CalendarButton onClick={() => setMonth(true)} />} />}
+      {tab === 'diary' && (
+        <>
+          <Header
+            action={
+              <div className="head-actions">
+                <SoundToggle />
+                <CalendarButton onClick={() => setMonth(true)} />
+              </div>
+            }
+          />
+          {cups.length === 0 && (
+            <p className="empty">
+              <b>Дневник пока пуст</b>
+              Нажми плюс внизу, сфотографируй чай или расскажи о нём голосом.
+            </p>
+          )}
+        </>
+      )}
 
       {tab === 'diary' && grouped(cups).map(([label, group]) => (
         <section key={label}>
@@ -84,6 +103,7 @@ export function Home() {
             className="glass-btn danger"
             onClick={() => {
               if (toDelete) cupStore.remove(toDelete.id)
+              haptics.warning()
               setToDelete(null)
               setShown(false)
             }}

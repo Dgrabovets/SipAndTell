@@ -67,6 +67,18 @@ const PATHS: Record<string, ReactNode> = {
     </>
   ),
   chart: <path d="M5 20V10M12 20V4M19 20v-7" />,
+  sound: (
+    <>
+      <path d="M4 10v4h3.5l4.5 3.5v-11L7.5 10z" />
+      <path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" />
+    </>
+  ),
+  mute: (
+    <>
+      <path d="M4 10v4h3.5l4.5 3.5v-11L7.5 10z" />
+      <path d="M16 9.5l5 5M21 9.5l-5 5" />
+    </>
+  ),
   back: <path d="M15 6l-6 6 6 6" />,
   forward: <path d="M9 6l6 6-6 6" />,
   grid: <path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" />,

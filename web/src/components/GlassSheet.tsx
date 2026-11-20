@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useDragControls } from 'motion/react'
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react'
+import { webApp } from '../telegram'
 import { Icon } from './Icon'
 import { flowRippleInto } from './spawnRipple'
 
@@ -21,6 +22,25 @@ interface Props {
 export function GlassSheet({ open, label, onClose, children, tint, narrow, rippleFrom = 'top' }: Props) {
   const controls = useDragControls()
   const sheet = useRef<HTMLDivElement>(null)
+
+  // Системная кнопка «Назад» Telegram закрывает открытую шторку, второй стрелки в приложении нет.
+  useEffect(() => {
+    if (!open) return
+    try {
+      webApp.BackButton.show()
+      webApp.BackButton.onClick(onClose)
+    } catch {
+      /* вне Telegram кнопки «Назад» нет */
+    }
+    return () => {
+      try {
+        webApp.BackButton.offClick(onClose)
+        webApp.BackButton.hide()
+      } catch {
+        /* вне Telegram кнопки «Назад» нет */
+      }
+    }
+  }, [open, onClose])
 
   useEffect(() => {
     if (open && sheet.current) flowRippleInto(sheet.current, rippleFrom)
